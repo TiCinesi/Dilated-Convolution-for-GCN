@@ -1,0 +1,5 @@
+*.pyc
+__pycache__
+datasets/*
+graphym/datasets
+graphym/results/

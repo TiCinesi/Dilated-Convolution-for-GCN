@@ -1,0 +1,44 @@
+out_dir: results
+dataset:
+  # format: PyG
+  # name: TU_ENZYMES
+  # transductive: false
+  # task: graph
+  # task_type: classification
+  # node_encoder: false
+  # edge_encoder: false
+  format: OGB
+  name: ogbg-molhiv
+  task: graph
+  task_type: classification
+  node_encoder: true
+  node_encoder_name: Atom
+  edge_encoder: true
+  edge_encoder_name: Bond
+train:
+  batch_size: 32
+  eval_period: 1
+  ckpt_period: 100
+  sampler: full_batch
+model:
+  type: gnn
+  loss_fun: cross_entropy
+  graph_pooling: add
+gnn:
+  layers_pre_mp: 0
+  layers_mp: 5 #not used, needs to be > 0
+  layers_k1: 3
+  layers_k2: 2
+  layers_post_mp: 1
+  dim_inner: 300 #hidden dim
+  layer_type: generalconv #gat,gin,...
+  stage_type: stack
+  batchnorm: true #true, check where
+  act: relu #activation function
+  dropout: 0.5
+  agg: mean
+  normalize_adj: false
+optim:
+  optimizer: adam
+  base_lr: 0.001
+  max_epoch: 500

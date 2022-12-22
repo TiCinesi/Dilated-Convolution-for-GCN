@@ -1,5 +1,12 @@
 out_dir: results
 dataset:
+  # format: PyG
+  # name: TU_ENZYMES
+  # transductive: false
+  # task: graph
+  # task_type: classification
+  # node_encoder: false
+  # edge_encoder: false
   format: OGB
   name: ogbg-molhiv
   task: graph
@@ -9,24 +16,25 @@ dataset:
   edge_encoder: true
   edge_encoder_name: Bond
 train:
-  batch_size: 128
+  batch_size: 64
   eval_period: 1
   ckpt_period: 100
   sampler: full_batch
 model:
-  type: gnn
+  type: dilated-gnn
   loss_fun: cross_entropy
-  edge_decoding: dot
   graph_pooling: add
 gnn:
   layers_pre_mp: 1
-  layers_mp: 2
+  layers_mp: 5 #not used, needs to be > 0
+  layers_k1: 3
+  layers_k2: 2
   layers_post_mp: 1
-  dim_inner: 300
-  layer_type: generalconv
-  stage_type: skipconcat
-  batchnorm: true
-  act: prelu
+  dim_inner: 300 #hidden dim
+  layer_type: generalconv #gat,gin,...
+  stage_type: dilated-stage
+  batchnorm: true #true, check where
+  act: prelu #activation function
   dropout: 0.0
   agg: mean
   normalize_adj: false
