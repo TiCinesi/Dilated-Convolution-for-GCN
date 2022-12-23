@@ -1,5 +1,5 @@
 *.pyc
 __pycache__
 datasets/*
-graphym/datasets
-graphym/results/
+graphgym/datasets
+graphgym/results/
