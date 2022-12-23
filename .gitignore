@@ -1,5 +1,4 @@
 *.pyc
 __pycache__
 datasets/*
-graphgym/datasets
-graphgym/results/
+tmp_results/*
