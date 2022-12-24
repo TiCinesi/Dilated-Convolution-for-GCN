@@ -1,12 +1,6 @@
-out_dir: results
+out_dir: tmp_results
+num_workers: 16
 dataset:
-  # format: PyG
-  # name: TU_ENZYMES
-  # transductive: false
-  # task: graph
-  # task_type: classification
-  # node_encoder: false
-  # edge_encoder: false
   format: OGB
   name: ogbg-molhiv
   task: graph
@@ -29,9 +23,10 @@ gnn:
   layers_mp: 5 #not used, needs to be > 0
   layers_k1: 3
   layers_k2: 2
+  use_edge_features: true 
   layers_post_mp: 1
   dim_inner: 300 #hidden dim
-  layer_type: generalconv #gat,gin,...
+  layer_type: generaledgeconv #generaledgeconv
   stage_type: dilated-stage
   batchnorm: true #true, check where
   act: prelu #activation function

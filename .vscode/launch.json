@@ -5,21 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Main test",
+            "name": "dilated_model_test test",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/graphym/main.py",
+            "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/graphym/configs/example_graph.yaml", "--repeat",  "1"],
+            "args": ["--cfg", "${workspaceFolder}/configs/dilated_model_test.yaml", "--repeat",  "1"],
             "justMyCode": false
         },
         {
             "name": "ref test",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/graphym/main.py",
+            "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/graphym/configs/pyg/example_graph.yaml", "--repeat",  "1"],
+            "args": ["--cfg", "${workspaceFolder}/configs/pyg/example_graph.yaml", "--repeat",  "1"],
             "justMyCode": false
         }
     ]
