@@ -1,0 +1,9 @@
+# our idea
+model.type type ['dilated-gnn']
+gnn.layer_type layer_type ['eginconv','egatconv']
+gnn.stage_type stage_type ['dilated-stage']
+
+# used for comparison
+model.type type ['gnn']
+gnn.layer_type layer_type ['eginconv','egatconv']
+gnn.stage_type stage_type ['standard-stage']

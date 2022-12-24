@@ -40,7 +40,10 @@ class DilatedGNNModel(nn.Module):
         if cfg.gnn.layers_mp > 0:
             self.mp = GNNStage(dim_in=dim_in, dim_out=cfg.gnn.dim_inner,
                                num_layers=cfg.gnn.layers_mp)
+        
+        # NOTE here is the difference, since we are concatenating the computed features
         self.post_mp = GNNHead(dim_in=2*cfg.gnn.dim_inner, dim_out=dim_out)
+
 
         self.apply(init_weights)
 

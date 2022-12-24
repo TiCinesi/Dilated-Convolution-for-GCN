@@ -71,7 +71,7 @@ class DilatedGeneralLayer(GeneralLayer):
             edge_feature = batch.edge_attr[ids]
             edge_feature = self.gem(edge_feature)
 
-            batch.x = self.layer.model(x=batch.x, edge_index=edge_index, edge_feature=edge_feature)
+            batch.x = self.layer.model(x=batch.x, edge_index=edge_index, edge_attr=edge_feature)
         else:
             batch.x = self.layer.model(batch.x, edge_index)
        

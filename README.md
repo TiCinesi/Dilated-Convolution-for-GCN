@@ -20,12 +20,15 @@ Only node features:
 - GINConv: ginconv
 - GeneralConv: generalconv
 
-
-Create with edge features:
-- EGCNConv: egcnconv
-- ESAGEConv: esageconv
+Edge features:
 - EGATConv: egatconv
 - EGINConv: eginconv
+
+
+TODO with edge features:
+- EGCNConv: egcnconv
+- ESAGEConv: esageconv
+
 
 
 
@@ -34,3 +37,6 @@ Also edge feautes:
 - SplineConv splineconv
 - GeneralEdgeConv: generaledgeconv
 - GeneralSampleEdgeConv: generaralsampledgeconv
+
+
+This looks promising: GATv2Conv

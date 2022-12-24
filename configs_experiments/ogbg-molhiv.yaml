@@ -1,4 +1,4 @@
-out_dir: tmp_results
+out_dir: results_experiments
 num_workers: 16
 metric_best: 'auc'
 dataset:

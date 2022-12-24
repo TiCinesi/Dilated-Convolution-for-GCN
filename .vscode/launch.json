@@ -19,7 +19,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/configs/pyg/example_graph.yaml", "--repeat",  "1"],
+            "args": ["--cfg", "${workspaceFolder}/configs_experiments/ogbg-molhiv_grid_ogbg-molhiv/ogbg-molhiv-type=gnn-layer_type=egatconv-stage_type=standard-stage.yaml", "--repeat",  "1"],
             "justMyCode": false
         }
     ]
