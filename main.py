@@ -21,6 +21,7 @@ from torch_geometric.graphgym.utils.comp_budget import params_count
 from torch_geometric.graphgym.utils.device import auto_select_device
 
 if __name__ == '__main__':
+    torch.multiprocessing.set_sharing_strategy('file_system')
     # Load cmd line args
     args = parse_args()
     # Load config file
@@ -45,7 +46,7 @@ if __name__ == '__main__':
         logging.info(cfg)
         cfg.params = params_count(model)
         logging.info('Num parameters: %s', cfg.params)
-        train(model, datamodule, logger=True)
+        train(model, datamodule, logger=True, trainer_config={'strategy':None})
 
     # Aggregate results from different seeds
     agg_runs(cfg.out_dir, cfg.metric_best)
