@@ -35,6 +35,8 @@ class EdgeConnectivityAndFeatures(BaseTransform):
 
     def __call__(self, data: Data) -> Data:
         
+        if data.x is None:
+            data.x = torch.zeros(data.num_nodes, dtype=torch.long)
         def random_neighbours(l):
             a = list(l)
             random.shuffle(a)
