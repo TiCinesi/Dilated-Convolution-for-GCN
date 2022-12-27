@@ -12,6 +12,7 @@ from torch_geometric.graphgym.config import (
     load_cfg,
     set_out_dir,
     set_run_dir,
+    get_fname
 )
 from torch_geometric.graphgym.logger import set_printing
 from torch_geometric.graphgym.model_builder import create_model
@@ -20,35 +21,17 @@ from agg_runs import agg_runs
 from torch_geometric.graphgym.utils.comp_budget import params_count
 from torch_geometric.graphgym.utils.device import auto_select_device
 
+
 if __name__ == '__main__':
     torch.multiprocessing.set_sharing_strategy('file_system')
     # Load cmd line args
     args = parse_args()
     # Load config file
     load_cfg(cfg, args)
-    set_out_dir(cfg.out_dir, args.cfg_file)
-    # Set Pytorch environment
-    torch.set_num_threads(cfg.num_threads)
-    dump_cfg(cfg)
-    # Repeat for different random seeds
-    for i in range(args.repeat):
-        set_run_dir(cfg.out_dir)
-        set_printing()
-        # Set configurations for each run
-        cfg.seed = cfg.seed + 1
-        seed_everything(cfg.seed)
-        auto_select_device()
-        # Set machine learning pipeline
-        datamodule = GraphGymDataModule()
-        model = create_model()
-        # Print model info
-        logging.info(model)
-        logging.info(cfg)
-        cfg.params = params_count(model)
-        logging.info('Num parameters: %s', cfg.params)
-        train(model, datamodule, logger=True, trainer_config={'strategy':None})
 
     # Aggregate results from different seeds
+    fname = get_fname(args.cfg_file)
+    cfg.out_dir = os.path.join(cfg.out_dir, fname)
     agg_runs(cfg.out_dir, cfg.metric_best)
     # When being launched in batch mode, mark a yaml as done
     if args.mark_done:

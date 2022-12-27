@@ -28,7 +28,7 @@ def is_seed(s):
 
 
 def is_split(s):
-    if s in ['train', 'val']:
+    if s in ['train', 'val', 'test']:
         return True
     else:
         return False
@@ -89,8 +89,8 @@ def agg_runs(dir, metric_best='auto'):
         validation performance. Options: auto, accuracy, auc.
 
     '''
-    results = {'train': None, 'val': None}
-    results_best = {'train': None, 'val': None}
+    results = {'train': None, 'val': None, 'test': None}
+    results_best = {'train': None, 'val': None, 'test': None}
     for seed in os.listdir(dir):
         if is_seed(seed):
             dir_seed = os.path.join(dir, seed)
@@ -117,10 +117,15 @@ def agg_runs(dir, metric_best='auto'):
                     dir_split = os.path.join(dir_seed, split)
                     fname_stats = os.path.join(dir_split, 'stats.json')
                     stats_list = json_to_dict_list(fname_stats)
-                    stats_best = [
-                        stats for stats in stats_list
-                        if stats['epoch'] == best_epoch
-                    ][0]
+                    
+                    if split == 'test':
+                        stats_best = stats_list[0]
+                    else:
+                        stats_best = [
+                            stats for stats in stats_list
+                            if stats['epoch'] == best_epoch
+                        ][0]
+
                     print(stats_best)
                     stats_list = [[stats] for stats in stats_list]
                     if results[split] is None:
