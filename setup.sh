@@ -6,3 +6,8 @@ pip3 install ogb
 pip3 install optuna
 pip3 install networkx
 pip3 install torch-sparse
+
+#conda install -c nvidia -c rapidsai -c numba -c conda-forge cugraph
+#pip install cugraph-cu11 --extra-index-url=https://pypi.ngc.nvidia.com
+
+pip install graphgym

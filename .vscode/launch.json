@@ -5,14 +5,42 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "dilated_model_test test",
+            "name": "ogbg_molhiv test",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/configs/dilated_model_test.yaml", "--repeat",  "1"],
+            "args": ["--cfg", "${workspaceFolder}/configs/ogbg_molhiv.yaml", "--repeat",  "1"],
             "justMyCode": false
         },
+        {
+            "name": "test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "args": ["--cfg", "${workspaceFolder}/configs/test.yaml", "--repeat",  "1"],
+            "justMyCode": false
+        },
+        {
+            "name": "ogbg_ppa",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "args": ["--cfg", "${workspaceFolder}/configs/ogbg_ppa.yaml", "--repeat",  "1"],
+            "justMyCode": false
+        },
+        {
+            "name": "ogbn-proteins test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "args": ["--cfg", "${workspaceFolder}/configs/ogbn_proteins.yaml", "--repeat",  "1"],
+            "justMyCode": false
+        },
+     
         {
             "name": "ref test",
             "type": "python",
@@ -21,6 +49,25 @@
             "console": "integratedTerminal",
             "args": ["--cfg", "${workspaceFolder}/configs_experiments/ogbg-molhiv_grid_ogbg-molhiv/ogbg-molhiv-type=gnn-layer_type=egatconv-stage_type=standard-stage.yaml", "--repeat",  "1"],
             "justMyCode": false
+        },
+        {
+            "name": "debug aggregation",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/agg_batch.py",
+            "console": "integratedTerminal",
+            "args": ["--dir", "${workspaceFolder}/results_experiments/ogbg-molhiv_grid_exp1"],
+            "justMyCode": false
+        },
+        {
+            "name": "debug run aggregation",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/agg_run.py",
+            "console": "integratedTerminal",
+            "args": ["--cfg", "${workspaceFolder}/configs_experiments/ogbg-molhiv_grid_exp1/ogbg-molhiv-type=dilated-gnn-layer_type=egatconv-stage_type=dilated-stage-layers_k1=1-layers_k2=1.yaml"],
+            "justMyCode": false
         }
+
     ]
 }
