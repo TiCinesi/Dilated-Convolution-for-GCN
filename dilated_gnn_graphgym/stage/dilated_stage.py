@@ -19,8 +19,6 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
     """
     layer_conf = new_layer_config(dim_in, dim_out, 1, has_act=has_act,
                                       has_bias=False, cfg=cfg)
-    #NOTE edges are also mapped to an embedding space, cfg.dataset.edge_dim doesn't reflect this
-    layer_conf.edge_dim = cfg.gnn.dim_inner 
     return GeneralLayer(
         cfg.gnn.layer_type,
         layer_config=layer_conf)
@@ -29,7 +27,7 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
 cfg.gnn.layers_k1 = 1
 cfg.gnn.layers_k2 = 1
 
-@register_stage('dilated-stage')
+@register_stage('dilated_stage')
 class GNNDilatedEdgesFeatureStage(nn.Module):
 
     def __init__(self, dim_in, dim_out, num_layers) -> None:
@@ -59,11 +57,11 @@ class GNNDilatedEdgesFeatureStage(nn.Module):
 
         x = batch.x
 
-        #Call GNN layers + skip connections
+        #Call GNN layers + weighted residual connections (check terminology)
         for step in range(self.k2):
             layer = self.dilated_layers[step]
             new_batch = layer(batch, step)
-            new_batch.x = self.alphas[step]*new_batch.x + (torch.tensor(1.0) - self.alphas[step])*new_batch.x
+            new_batch.x = self.alphas[step]*new_batch.x + (torch.tensor(1.0) - self.alphas[step])*batch.x
             batch = new_batch
 
         batch.x = torch.cat([batch.x, x], dim=1)

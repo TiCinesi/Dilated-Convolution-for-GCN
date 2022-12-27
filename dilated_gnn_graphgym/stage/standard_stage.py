@@ -20,8 +20,6 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
     """
     layer_conf = new_layer_config(dim_in, dim_out, 1, has_act=has_act,
                                       has_bias=False, cfg=cfg)
-    #NOTE edges are also mapped to an embedding space, cfg.dataset.edge_dim doesn't reflect this
-    layer_conf.edge_dim = cfg.gnn.dim_inner 
     return GeneralLayer(
         cfg.gnn.layer_type,
         layer_config=layer_conf)
@@ -30,7 +28,7 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
 cfg.gnn.layers_k1 = 1
 cfg.gnn.layers_k2 = 1
 
-@register_stage('standard-stage')
+@register_stage('standard_stage')
 class GNNStackStage(nn.Module):
     """
     Simple Stage that stack GNN layers

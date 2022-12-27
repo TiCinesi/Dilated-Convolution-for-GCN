@@ -13,6 +13,8 @@ class EdgeConnectivity(BaseTransform):
         self.k2 = k2
 
     def __call__(self, data: Data) -> Data:
+        if data.x is None:
+            data.x = torch.zeros((data.num_nodes,1), dtype=torch.float)
 
         #TODO compute feature data (new class)
         if data.is_directed():
@@ -21,11 +23,15 @@ class EdgeConnectivity(BaseTransform):
         G = to_networkx(data, to_undirected=True, remove_self_loops=True)
 
         distance_graphs = []
+        distance_graphs_attr_ids = []
         for i in range(self.k2):
-            distance_graphs.append(nx.Graph())
+            distance_graphs.append([[], []])
+            distance_graphs_attr_ids.append([])
         
         for v in range(G.number_of_nodes()):
-            dist_layes = dict(enumerate(nx.bfs_layers(G, [v])))
+            depth_limit = int(2*math.pow(3, self.k2-1)*self.k1)
+            bsf_tree = nx.bfs_tree(G, source=v, depth_limit=depth_limit)
+            dist_layes = dict(enumerate(nx.bfs_layers(bsf_tree, [v])))
 
             for i in range(self.k2):
                 d = int(2*math.pow(3, i)*self.k1)
@@ -35,11 +41,15 @@ class EdgeConnectivity(BaseTransform):
                     continue
 
                 for u in dist_layes[d]:
-                    distance_graphs[i].add_edge(v, u)
+                    distance_graphs[i][0].append(u)
+                    distance_graphs[i][1].append(v)
         
     
         for i in range(self.k2):
-            data.__setattr__(f'dilated_step_{i}_edge_index',  from_networkx(distance_graphs[i]).edge_index)
+            edges = torch.tensor(distance_graphs[i], dtype=torch.int64)
+            if edges.shape[0] == 0: 
+                edges = torch.empty((2,0), dtype=torch.int64)
+            data.__setattr__(f'dilated_step_{i}_edge_index',  edges)
 
 
         return data

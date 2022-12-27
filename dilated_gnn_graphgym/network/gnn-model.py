@@ -14,13 +14,12 @@ from torch_geometric.graphgym.models.layer import (
 from torch_geometric.graphgym.models.gnn import GNNPreMP
 from torch_geometric.graphgym.register import register_network
 
-
 from dilated_gnn_graphgym.encoder.feature_encoder import FeatureEncoder
 
-@register_network('dilated_gnn')
-class DilatedGNNModel(nn.Module):
+@register_network('standard_gnn')
+class GNN(nn.Module):
     """
-    Custom GNN model: encoder + stage + head
+    General GNN model: encoder + stage + head
 
     Args:
         dim_in (int): Input dimension
@@ -42,10 +41,7 @@ class DilatedGNNModel(nn.Module):
         if cfg.gnn.layers_mp > 0:
             self.mp = GNNStage(dim_in=dim_in, dim_out=cfg.gnn.dim_inner,
                                num_layers=cfg.gnn.layers_mp)
-        
-        # NOTE here is the difference, since we are concatenating the computed features
-        self.post_mp = GNNHead(dim_in=2*cfg.gnn.dim_inner, dim_out=dim_out)
-
+        self.post_mp = GNNHead(dim_in=cfg.gnn.dim_inner, dim_out=dim_out)
 
         self.apply(init_weights)
 

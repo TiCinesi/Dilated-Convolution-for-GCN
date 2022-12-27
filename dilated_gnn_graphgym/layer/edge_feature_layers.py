@@ -31,9 +31,9 @@ class EGINConv(nn.Module):
         gin_nn = nn.Sequential(
             Linear_pyg(layer_config.dim_in, layer_config.dim_out), nn.ReLU(),
             Linear_pyg(layer_config.dim_out, layer_config.dim_out))
-        self.model = pyg.nn.GINEConv(gin_nn)
+        self.model = pyg.nn.GINEConv(gin_nn, edge_dim=layer_config.edge_dim)
 
-    def forward(self, batch):
+    def forward(self, batch):       
         batch.x = self.model(batch.x, batch.edge_index, batch.edge_attr)
         return batch
 
