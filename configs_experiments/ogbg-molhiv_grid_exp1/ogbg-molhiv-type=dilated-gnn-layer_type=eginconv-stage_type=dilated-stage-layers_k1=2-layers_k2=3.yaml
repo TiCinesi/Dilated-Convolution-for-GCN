@@ -1,0 +1,41 @@
+dataset:
+  edge_encoder: true
+  edge_encoder_name: Bond
+  format: OGB
+  name: ogbg-molhiv
+  node_encoder: true
+  node_encoder_name: Atom
+  task: graph
+  task_type: classification
+gnn:
+  act: relu
+  agg: none
+  batchnorm: true
+  dim_inner: 300
+  dropout: 0.5
+  layer_type: eginconv
+  layers_k1: 2
+  layers_k2: 3
+  layers_mp: 5
+  layers_post_mp: 1
+  layers_pre_mp: 1
+  normalize_adj: false
+  stage_type: dilated-stage
+  use_edge_features: true
+metric_best: auc
+model:
+  graph_pooling: mean
+  loss_fun: cross_entropy
+  type: dilated-gnn
+num_workers: 16
+optim:
+  base_lr: 0.001
+  max_epoch: 500
+  optimizer: adam
+  scheduler: none
+out_dir: results_experiments/ogbg-molhiv_grid_exp1
+train:
+  batch_size: 64
+  ckpt_period: 100
+  eval_period: 1
+  sampler: full_batch
