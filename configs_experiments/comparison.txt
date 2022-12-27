@@ -1,0 +1,13 @@
+# our idea
+model.type type ['dilated_gnn']
+gnn.stage_type stage_type ['dilated_stage']
+gnn.layer_type layer_type ['eginconv','egatconv']
+gnn.layers_k1 layers_k1 [1,2,3]
+gnn.layers_k2 layers_k2 [1,2,3]
+gnn.act_on_last_layer_mp act_on_last_layer_mp [False,True]
+
+# used for comparison
+model.type type ['standard_gnn']
+gnn.stage_type stage_type ['standard_stage']
+gnn.layer_type layer_type ['eginconv','egatconv']
+gnn.act_on_last_layer_mp act_on_last_layer_mp [False,True]
