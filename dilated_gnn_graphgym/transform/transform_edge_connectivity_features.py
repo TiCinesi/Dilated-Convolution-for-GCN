@@ -42,13 +42,6 @@ class EdgeConnectivityAndFeatures(BaseTransform):
             random.shuffle(a)
             return iter(a)
 
-
-        if data.is_directed():
-            raise ValueError("Graph is directed, cannot proceed!")
-        
-        G = to_networkx(data, to_undirected=True, remove_self_loops=True)
-
-
         distance_graphs = []
         distance_graphs_attr_ids = []
         for i in range(self.k2):
@@ -61,31 +54,62 @@ class EdgeConnectivityAndFeatures(BaseTransform):
             e = tuple(data.edge_index[:, i].numpy())
             edge_ids[e] = i 
 
+        if data.is_directed():
+            G = to_networkx(data, to_undirected=False, remove_self_loops=True)
 
-        for v in range(G.number_of_nodes()):
-            depth_limit = int(2*math.pow(3, self.k2-1)*self.k1)
-            bsf_tree = nx.bfs_tree(G, source=v, depth_limit=depth_limit, sort_neighbors=random_neighbours)
-            dist_layes = dict(enumerate(nx.bfs_layers(bsf_tree, [v])))
-            bsf_tree = nx.reverse(bsf_tree)
-            
-            
-            for i in range(self.k2):
-                d = int(2*math.pow(3, i)*self.k1)
+
+            for v in range(G.number_of_nodes()):
+                depth_limit = int(math.pow(2, self.k2-1)*self.k1)
+                bsf_tree = nx.bfs_tree(nx.reverse(G), source=v, depth_limit=depth_limit, sort_neighbors=random_neighbours)
+                dist_layes = dict(enumerate(nx.bfs_layers(bsf_tree, [v])))
+                bsf_tree = nx.reverse(bsf_tree)
+                
+                
+                for i in range(self.k2):
+                    d = int(math.pow(2, i)*self.k1)
+                            
+                    if not d in dist_layes.keys():
+                        #no nodes in d-th level set
+                        continue
+
+                    for u in dist_layes[d]:
+                        distance_graphs[i][0].append(u)
+                        distance_graphs[i][1].append(v)
+
+                        edges_on_u_v_path = list(nx.dfs_edges(bsf_tree, source=u))
                         
-                if not d in dist_layes.keys():
-                    #no nodes in d-th level set
-                    continue
+                        edge_feature_id = []
+                        for e in edges_on_u_v_path:
+                            edge_feature_id.append(edge_ids[e])
+                        distance_graphs_attr_ids[i].append(edge_feature_id)
+        
+        else:
+            G = to_networkx(data, to_undirected=True, remove_self_loops=True)
 
-                for u in dist_layes[d]:
-                    distance_graphs[i][0].append(u)
-                    distance_graphs[i][1].append(v)
+            for v in range(G.number_of_nodes()):
+                depth_limit = int(2*math.pow(3, self.k2-1)*self.k1)
+                bsf_tree = nx.bfs_tree(G, source=v, depth_limit=depth_limit, sort_neighbors=random_neighbours)
+                dist_layes = dict(enumerate(nx.bfs_layers(bsf_tree, [v])))
+                bsf_tree = nx.reverse(bsf_tree)
+                
+                
+                for i in range(self.k2):
+                    d = int(2*math.pow(3, i)*self.k1)
+                            
+                    if not d in dist_layes.keys():
+                        #no nodes in d-th level set
+                        continue
 
-                    edges_on_u_v_path = list(nx.dfs_edges(bsf_tree, source=u))
-                    
-                    edge_feature_id = []
-                    for e in edges_on_u_v_path:
-                        edge_feature_id.append(edge_ids[e])
-                    distance_graphs_attr_ids[i].append(edge_feature_id)
+                    for u in dist_layes[d]:
+                        distance_graphs[i][0].append(u)
+                        distance_graphs[i][1].append(v)
+
+                        edges_on_u_v_path = list(nx.dfs_edges(bsf_tree, source=u))
+                        
+                        edge_feature_id = []
+                        for e in edges_on_u_v_path:
+                            edge_feature_id.append(edge_ids[e])
+                        distance_graphs_attr_ids[i].append(edge_feature_id)
         
         data = DilatedInfoData(data.x, data.edge_index, data.edge_attr, data.y, data.pos)
 
@@ -100,11 +124,14 @@ class EdgeConnectivityAndFeatures(BaseTransform):
             idx = torch.tensor(distance_graphs_attr_ids[i], dtype=torch.long)
 
             if idx.shape[0] == 0: 
-               # When no path is present, to prevent collate_fn issue, we need to create and empty feature vector id same size
-               # [0, path_len]
-               d = int(2*math.pow(3, i)*self.k1)
-               empty_ids = torch.empty((0, d), dtype=torch.long)
-               data.__setattr__(f'dilated_step_{i}_path_ids', empty_ids)
+                # When no path is present, to prevent collate_fn issue, we need to create and empty feature vector id same size
+                # [0, path_len]
+                if data.is_directed():
+                    d = int(math.pow(2, i)*self.k1)
+                else:
+                    d = int(2*math.pow(3, i)*self.k1)
+                empty_ids = torch.empty((0, d), dtype=torch.long)
+                data.__setattr__(f'dilated_step_{i}_path_ids', empty_ids)
             else:
                 data.__setattr__(f'dilated_step_{i}_path_ids',  idx)
 

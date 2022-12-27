@@ -3,7 +3,7 @@ import torch.nn as nn
 
 from torch_geometric.graphgym.config import cfg
 from torch_geometric.graphgym.register import register_stage
-
+import torch_geometric.graphgym.register as register
 from dilated_gnn_graphgym.layer.dilated_gnn_layer import create_dilated_gnn_layer
 from torch_geometric.graphgym.models.layer import GeneralLayer, new_layer_config
 
@@ -37,7 +37,10 @@ class GNNDilatedEdgesFeatureStage(nn.Module):
         self.classic_layers = nn.ModuleList()
         for i in range(self.k1):
             d_in = dim_in if i == 0 else dim_out
-            layer = create_classic_gnn_layer(d_in, dim_out)
+            has_act = True
+            if i == num_layers - 1: #last layer
+                has_act = cfg.gnn.act_on_last_layer_mp
+            layer = create_classic_gnn_layer(d_in, dim_out, has_act)
             self.classic_layers.append(layer)
 
         # Dilated GNN
@@ -46,16 +49,23 @@ class GNNDilatedEdgesFeatureStage(nn.Module):
         self.dilated_layers = nn.ModuleList()
 
         for i in range(self.k2):
-            layer = create_dilated_gnn_layer(dim_out, dim_out)
+            has_act = True
+            if i == num_layers - 1: #last layer
+                has_act = cfg.gnn.act_on_last_layer_mp
+            layer = create_dilated_gnn_layer(dim_out, dim_out, has_act)
             self.dilated_layers.append(layer)
 
-    
+        self.act = register.act_dict[cfg.gnn.act]()
+
     def forward(self, batch):
         #Classic layers
         for i in range(self.k1):
             batch = self.classic_layers[i](batch)
 
         x = batch.x
+
+        if not cfg.gnn.act_on_last_layer_mp: #perform activation if not already done
+            batch.x = self.act(batch.x)
 
         #Call GNN layers + weighted residual connections (check terminology)
         for step in range(self.k2):

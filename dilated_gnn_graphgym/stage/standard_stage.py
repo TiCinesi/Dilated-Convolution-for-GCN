@@ -27,7 +27,7 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
 
 cfg.gnn.layers_k1 = 1
 cfg.gnn.layers_k2 = 1
-
+cfg.gnn.act_on_last_layer_mp = True
 @register_stage('standard_stage')
 class GNNStackStage(nn.Module):
     """
@@ -46,7 +46,10 @@ class GNNStackStage(nn.Module):
                 d_in = dim_in if i == 0 else dim_in + i * dim_out
             else:
                 d_in = dim_in if i == 0 else dim_out
-            layer = create_classic_gnn_layer(d_in, dim_out)
+            has_act = True
+            if i == num_layers - 1: #last layer
+                has_act = cfg.gnn.act_on_last_layer_mp
+            layer = create_classic_gnn_layer(d_in, dim_out, has_act)
             self.add_module('layer{}'.format(i), layer)
 
     def forward(self, batch):
