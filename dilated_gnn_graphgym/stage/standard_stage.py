@@ -28,8 +28,7 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
 cfg.gnn.layers_k1 = 1
 cfg.gnn.layers_k2 = 1
 cfg.gnn.act_on_last_layer_mp = True
-@register_stage('standard_stage')
-class GNNStackStage(nn.Module):
+class GNNStandardStage(nn.Module):
     """
     Simple Stage that stack GNN layers
 

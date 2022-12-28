@@ -26,9 +26,9 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
 
 cfg.gnn.layers_k1 = 1
 cfg.gnn.layers_k2 = 1
-
-@register_stage('dilated_stage')
-class GNNDilatedEdgesFeatureStage(nn.Module):
+cfg.gnn.learn_alpha_residual_connection = True
+cfg.gnn.dilated_path_join = 'concat'
+class GNNDilatedStage(nn.Module):
 
     def __init__(self, dim_in, dim_out, num_layers) -> None:
         super().__init__()
@@ -45,7 +45,9 @@ class GNNDilatedEdgesFeatureStage(nn.Module):
 
         # Dilated GNN
         self.k2 = cfg.gnn.layers_k2
-        self.alphas = nn.Parameter(torch.full((self.k2,), 0.5))
+
+        if cfg.gnn.learn_alpha_residual_connection:
+            self.alphas = nn.Parameter(torch.full((self.k2,), 0.0))
         self.dilated_layers = nn.ModuleList()
 
         for i in range(self.k2):
@@ -71,8 +73,18 @@ class GNNDilatedEdgesFeatureStage(nn.Module):
         for step in range(self.k2):
             layer = self.dilated_layers[step]
             new_batch = layer(batch, step)
-            new_batch.x = self.alphas[step]*new_batch.x + (torch.tensor(1.0) - self.alphas[step])*batch.x
+            if cfg.gnn.learn_alpha_residual_connection:
+                alpha = torch.sigmoid(self.alphas[step])
+                new_batch.x = alpha*new_batch.x + (torch.tensor(1.0) - alpha)*batch.x
+            else:
+                new_batch.x = new_batch.x + batch.x
+            
             batch = new_batch
-
-        batch.x = torch.cat([batch.x, x], dim=1)
+        
+        #Skip connection between 2 paths
+        if cfg.gnn.dilated_path_join == 'concat':
+            batch.x = torch.cat([batch.x, x], dim=1)
+        elif cfg.gnn.dilated_path_join == 'add':
+            batch.x = batch.x + x
+        
         return batch       

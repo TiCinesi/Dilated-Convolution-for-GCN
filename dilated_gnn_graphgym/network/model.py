@@ -16,6 +16,7 @@ from torch_geometric.graphgym.register import register_network
 
 
 from dilated_gnn_graphgym.encoder.feature_encoder import FeatureEncoder
+from dilated_gnn_graphgym.stage.dilated_stage import GNNDilatedStage
 
 @register_network('dilated_gnn')
 class DilatedGNNModel(nn.Module):
@@ -29,7 +30,6 @@ class DilatedGNNModel(nn.Module):
     """
     def __init__(self, dim_in, dim_out, **kwargs):
         super().__init__()
-        GNNStage = register.stage_dict[cfg.gnn.stage_type]
         GNNHead = register.head_dict[cfg.gnn.head]
 
         self.encoder = FeatureEncoder(dim_in)
@@ -40,11 +40,14 @@ class DilatedGNNModel(nn.Module):
                                    cfg.gnn.layers_pre_mp)
             dim_in = cfg.gnn.dim_inner
         if cfg.gnn.layers_mp > 0:
-            self.mp = GNNStage(dim_in=dim_in, dim_out=cfg.gnn.dim_inner,
+            self.mp = GNNDilatedStage(dim_in=dim_in, dim_out=cfg.gnn.dim_inner,
                                num_layers=cfg.gnn.layers_mp)
         
         # NOTE here is the difference, since we are concatenating the computed features
-        self.post_mp = GNNHead(dim_in=2*cfg.gnn.dim_inner, dim_out=dim_out)
+        dim_in = cfg.gnn.dim_inner
+        if cfg.gnn.dilated_path_join == 'concat':
+            dim_in = 2*dim_in
+        self.post_mp = GNNHead(dim_in=dim_in, dim_out=dim_out)
 
 
         self.apply(init_weights)

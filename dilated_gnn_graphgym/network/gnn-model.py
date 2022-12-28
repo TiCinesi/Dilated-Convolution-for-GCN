@@ -15,6 +15,7 @@ from torch_geometric.graphgym.models.gnn import GNNPreMP
 from torch_geometric.graphgym.register import register_network
 
 from dilated_gnn_graphgym.encoder.feature_encoder import FeatureEncoder
+from dilated_gnn_graphgym.stage.standard_stage import GNNStandardStage
 
 @register_network('standard_gnn')
 class GNN(nn.Module):
@@ -28,7 +29,6 @@ class GNN(nn.Module):
     """
     def __init__(self, dim_in, dim_out, **kwargs):
         super().__init__()
-        GNNStage = register.stage_dict[cfg.gnn.stage_type]
         GNNHead = register.head_dict[cfg.gnn.head]
 
         self.encoder = FeatureEncoder(dim_in)
@@ -39,7 +39,7 @@ class GNN(nn.Module):
                                    cfg.gnn.layers_pre_mp)
             dim_in = cfg.gnn.dim_inner
         if cfg.gnn.layers_mp > 0:
-            self.mp = GNNStage(dim_in=dim_in, dim_out=cfg.gnn.dim_inner,
+            self.mp = GNNStandardStage(dim_in=dim_in, dim_out=cfg.gnn.dim_inner,
                                num_layers=cfg.gnn.layers_mp)
         self.post_mp = GNNHead(dim_in=cfg.gnn.dim_inner, dim_out=dim_out)
 
