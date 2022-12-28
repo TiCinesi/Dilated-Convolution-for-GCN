@@ -27,11 +27,12 @@ gnn:
   layers_mp: 5 #when model=dilated_gnn not used, but needs to be > 0
   layers_k1: 2 #only model=dilated_gnn
   layers_k2: 2 #only model=dilated_gnn
+  dilated_path_join: concat #[concat, add, none] #only model=dilated_gnn
+  learn_alpha_residual_connection: true #[true, false] #only model=dilated_gnn
+  layer_type: eginconv #[egatconv, eginconv]
   use_edge_features: true 
   layers_post_mp: 1
   dim_inner: 300 #hidden dim
-  layer_type: eginconv #[egatconv, eginconv]
-  stage_type: standard_stage # [standard_stage, dilated_stage]
   batchnorm: true
   act: relu #activation function
   act_on_last_layer_mp: false

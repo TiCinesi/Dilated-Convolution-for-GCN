@@ -1,0 +1,11 @@
+# our idea
+model.type type ['dilated_gnn']
+gnn.layer_type layer_type ['eginconv','egatconv']
+gnn.layers_k1 layers_k1 [1,2,3]
+gnn.layers_k2 layers_k2 [1,2,3]
+gnn.dilated_path_join dilated_path_join ['concat','add','none']
+gnn.learn_alpha_residual_connection learn_alpha_residual_connection [True,False]
+
+# used for comparison
+model.type type ['standard_gnn']
+gnn.layer_type layer_type ['eginconv','egatconv']
