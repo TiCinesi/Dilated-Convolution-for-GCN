@@ -65,7 +65,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/agg_run.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/configs_experiments/ogbg-molhiv_grid_exp1/ogbg-molhiv-type=dilated-gnn-layer_type=egatconv-stage_type=dilated-stage-layers_k1=1-layers_k2=1.yaml"],
+            "args": ["--cfg", "${workspaceFolder}/configs_experiments/ogbg_molhiv_baseline_grid_comparison/ogbg_molhiv_baseline-type=standard_gnn-stage_type=standard_stage-layer_type=eginconv-act_on_last_layer_mp=True.yaml"],
             "justMyCode": false
         }
 
