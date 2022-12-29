@@ -12,6 +12,7 @@ from torch_geometric.datasets import (
 from torch_geometric.graphgym.config import cfg
 
 from dilated_gnn_graphgym.loader.ogb import create_loader_ogb
+from dilated_gnn_graphgym.loader.tudataset import create_loader_tu
 
 from dilated_gnn_graphgym.transform.transform_edge_connectivity import EdgeConnectivity
 from dilated_gnn_graphgym.transform.transform_edge_connectivity_features import EdgeConnectivityAndFeatures
@@ -84,8 +85,8 @@ def create_loader():
         transform = EmptyNodeFeatures()
 
     # Load from Pytorch Geometric dataset
-    if format == 'PyG':
-        dataset = load_pyg(name, dataset_dir)
+    if format == 'TU':
+        dataset = create_loader_tu(name, dataset_dir, transform)
     # Load from OGB formatted data
     elif format == 'OGB':
         dataset = create_loader_ogb(name, dataset_dir, transform)

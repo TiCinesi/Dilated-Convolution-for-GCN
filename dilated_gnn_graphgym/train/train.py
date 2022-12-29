@@ -11,6 +11,7 @@ from dilated_gnn_graphgym.train.logger import LoggerCallback
 from torch_geometric.graphgym.model_builder import GraphGymModule
 
 
+
 class GraphGymDataModule(LightningDataModule):
     def __init__(self):
         self.loaders = create_loader()

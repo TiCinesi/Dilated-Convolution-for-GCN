@@ -53,14 +53,31 @@ class GNNStandardStage(nn.Module):
 
     def forward(self, batch):
         """"""
-        for i, layer in enumerate(self.children()):
-            x = batch.x
-            batch = layer(batch)
-            if cfg.gnn.stage_type == 'skipsum':
-                batch.x = x + batch.x
-            elif cfg.gnn.stage_type == 'skipconcat' and \
-                    i < self.num_layers - 1:
-                batch.x = torch.cat([x, batch.x], dim=1)
-        if cfg.gnn.l2norm:
-            batch.x = F.normalize(batch.x, p=2, dim=-1)
-        return batch
+        if cfg.model.graph_pooling == 'concat_across_sum_of_layers':
+            h = []
+            for i, layer in enumerate(self.children()):
+                x = batch.x
+                batch = layer(batch)
+                if cfg.gnn.stage_type == 'skipsum':
+                    batch.x = x + batch.x
+                elif cfg.gnn.stage_type == 'skipconcat' and \
+                        i < self.num_layers - 1:
+                    batch.x = torch.cat([x, batch.x], dim=1)
+                h.append(batch.x)
+            batch.x = torch.stack(h)
+            if cfg.gnn.l2norm:
+                batch.x = F.normalize(batch.x, p=2, dim=-1)
+            return batch
+
+        else:
+            for i, layer in enumerate(self.children()):
+                x = batch.x
+                batch = layer(batch)
+                if cfg.gnn.stage_type == 'skipsum':
+                    batch.x = x + batch.x
+                elif cfg.gnn.stage_type == 'skipconcat' and \
+                        i < self.num_layers - 1:
+                    batch.x = torch.cat([x, batch.x], dim=1)
+            if cfg.gnn.l2norm:
+                batch.x = F.normalize(batch.x, p=2, dim=-1)
+            return batch
