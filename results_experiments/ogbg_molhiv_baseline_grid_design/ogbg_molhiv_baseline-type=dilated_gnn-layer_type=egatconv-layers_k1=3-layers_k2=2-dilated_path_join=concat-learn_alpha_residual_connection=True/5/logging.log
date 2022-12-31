@@ -1,0 +1,428 @@
+GraphGymModule(
+  (model): DilatedGNNModel(
+    (encoder): FeatureEncoder(
+      (node_encoder): AtomEncoder(
+        (atom_embedding_list): ModuleList(
+          (0): Embedding(119, 300)
+          (1): Embedding(4, 300)
+          (2): Embedding(12, 300)
+          (3): Embedding(12, 300)
+          (4): Embedding(10, 300)
+          (5): Embedding(6, 300)
+          (6): Embedding(6, 300)
+          (7): Embedding(2, 300)
+          (8): Embedding(2, 300)
+        )
+      )
+      (edge_encoder): BondEncoder(
+        (bond_embedding_list): ModuleList(
+          (0): Embedding(5, 300)
+          (1): Embedding(6, 300)
+          (2): Embedding(2, 300)
+        )
+      )
+    )
+    (mp): GNNDilatedStage(
+      (classic_layers): ModuleList(
+        (0): GeneralLayer(
+          (layer): EGATConv(
+            (model): GATConv(300, 300, heads=1)
+          )
+          (post_layer): Sequential(
+            (0): BatchNorm1d(300, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): Dropout(p=0.5, inplace=False)
+            (2): ReLU()
+          )
+        )
+        (1): GeneralLayer(
+          (layer): EGATConv(
+            (model): GATConv(300, 300, heads=1)
+          )
+          (post_layer): Sequential(
+            (0): BatchNorm1d(300, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): Dropout(p=0.5, inplace=False)
+            (2): ReLU()
+          )
+        )
+        (2): GeneralLayer(
+          (layer): EGATConv(
+            (model): GATConv(300, 300, heads=1)
+          )
+          (post_layer): Sequential(
+            (0): BatchNorm1d(300, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): Dropout(p=0.5, inplace=False)
+            (2): ReLU()
+          )
+        )
+      )
+      (dilated_layers): ModuleList(
+        (0): DilatedGeneralLayer(
+          (layer): EGATConv(
+            (model): GATConv(300, 300, heads=1)
+          )
+          (post_layer): Sequential(
+            (0): BatchNorm1d(300, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): Dropout(p=0.5, inplace=False)
+            (2): ReLU()
+          )
+          (gem): GeM(p=3.0000, eps=1e-06)
+        )
+        (1): DilatedGeneralLayer(
+          (layer): EGATConv(
+            (model): GATConv(300, 300, heads=1)
+          )
+          (post_layer): Sequential(
+            (0): BatchNorm1d(300, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): Dropout(p=0.5, inplace=False)
+            (2): ReLU()
+          )
+          (gem): GeM(p=3.0000, eps=1e-06)
+        )
+      )
+      (act): ReLU()
+    )
+    (post_mp): GNNGraphHead(
+      (layer_post_mp): MLP(
+        (model): Sequential(
+          (0): Linear(
+            (model): Linear(600, 1, bias=True)
+          )
+        )
+      )
+    )
+  )
+)
+accelerator: cuda
+benchmark: False
+bn:
+  eps: 1e-05
+  mom: 0.1
+cfg_dest: config.yaml
+custom_metrics: []
+dataset:
+  cache_load: False
+  cache_save: False
+  dir: ./datasets
+  edge_dim: 300
+  edge_encoder: True
+  edge_encoder_bn: False
+  edge_encoder_name: Bond
+  edge_message_ratio: 0.8
+  edge_negative_sampling_ratio: 1.0
+  edge_train_mode: all
+  encoder: True
+  encoder_bn: True
+  encoder_dim: 128
+  encoder_name: db
+  fast_loader: False
+  format: OGB
+  label_column: none
+  label_table: none
+  location: local
+  name: ogbg-molhiv
+  node_encoder: True
+  node_encoder_bn: False
+  node_encoder_name: Atom
+  remove_feature: False
+  resample_disjoint: False
+  resample_negative: False
+  shuffle_split: True
+  split: [0.8, 0.1, 0.1]
+  split_mode: random
+  task: graph
+  task_type: classification
+  to_undirected: False
+  transductive: False
+  transform: none
+  tu_simple: True
+devices: 1
+gnn:
+  act: relu
+  act_on_last_layer_mp: False
+  agg: none
+  att_final_linear: False
+  att_final_linear_bn: False
+  att_heads: 1
+  batchnorm: True
+  clear_feature: True
+  dilated_path_join: concat
+  dim_inner: 300
+  dropout: 0.5
+  head: graph
+  keep_edge: 0.5
+  l2norm: True
+  layer_type: egatconv
+  layers_k1: 3
+  layers_k2: 2
+  layers_mp: 5
+  layers_post_mp: 1
+  layers_pre_mp: 0
+  learn_alpha_residual_connection: True
+  msg_direction: single
+  normalize_adj: False
+  self_msg: concat
+  skip_every: 1
+  stage_type: stack
+  use_edge_features: True
+gpu_mem: False
+mem:
+  inplace: False
+metric_agg: argmax
+metric_best: auc
+model:
+  edge_decoding: dot
+  graph_pooling: mean
+  loss_fun: cross_entropy
+  match_upper: True
+  size_average: mean
+  thresh: 0.5
+  type: dilated_gnn
+num_threads: 6
+num_workers: 16
+optim:
+  base_lr: 0.001
+  lr_decay: 0.1
+  max_epoch: 100
+  momentum: 0.9
+  optimizer: adam
+  scheduler: none
+  steps: [30, 60, 90]
+  weight_decay: 0.0
+out_dir: results_experiments/ogbg_molhiv_baseline_grid_design/ogbg_molhiv_baseline-type=dilated_gnn-layer_type=egatconv-layers_k1=3-layers_k2=2-dilated_path_join=concat-learn_alpha_residual_connection=True
+params: 963905
+print: both
+round: 4
+run_dir: results_experiments/ogbg_molhiv_baseline_grid_design/ogbg_molhiv_baseline-type=dilated_gnn-layer_type=egatconv-layers_k1=3-layers_k2=2-dilated_path_join=concat-learn_alpha_residual_connection=True/5
+seed: 6
+share:
+  dim_in: 9
+  dim_out: 2
+  num_splits: 3
+tensorboard_agg: True
+tensorboard_each_run: False
+train:
+  auto_resume: False
+  batch_size: 32
+  ckpt_clean: True
+  ckpt_period: 100
+  enable_ckpt: True
+  epoch_resume: -1
+  eval_period: 1
+  iter_per_epoch: 32
+  neighbor_sizes: [20, 15, 10, 5]
+  node_per_graph: 32
+  radius: extend
+  sample_node: False
+  sampler: full_batch
+  skip_train_eval: False
+  walk_length: 4
+val:
+  node_per_graph: 32
+  radius: extend
+  sample_node: False
+  sampler: full_batch
+view_emb: False
+Num parameters: 963905
+val: {'epoch': 0, 'loss': 0.673, 'lr': 0.001, 'params': 963905, 'time_iter': 0.8694, 'accuracy': 0.9844, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.4286}
+val: {'epoch': 0, 'loss': 0.0971, 'lr': 0.001, 'params': 963905, 'time_iter': 3.1266, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6682}
+train: {'epoch': 0, 'eta': 1867429.0372, 'loss': 0.1841, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3313, 'accuracy': 0.9626, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.5818}
+val: {'epoch': 1, 'loss': 0.0956, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7117, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6775}
+train: {'epoch': 1, 'eta': 1874283.5477, 'loss': 0.151, 'lr': 0.001, 'params': 963905, 'time_iter': 18.8414, 'accuracy': 0.9626, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6813}
+val: {'epoch': 2, 'loss': 0.0971, 'lr': 0.001, 'params': 963905, 'time_iter': 2.9226, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7067}
+train: {'epoch': 2, 'eta': 1834467.6617, 'loss': 0.1482, 'lr': 0.001, 'params': 963905, 'time_iter': 17.9645, 'accuracy': 0.9626, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6953}
+val: {'epoch': 3, 'loss': 0.1109, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7013, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6209}
+train: {'epoch': 3, 'eta': 1810019.2527, 'loss': 0.1498, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1549, 'accuracy': 0.9626, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6841}
+val: {'epoch': 4, 'loss': 0.1034, 'lr': 0.001, 'params': 963905, 'time_iter': 2.59, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6829}
+train: {'epoch': 4, 'eta': 1790812.559, 'loss': 0.1484, 'lr': 0.001, 'params': 963905, 'time_iter': 18.305, 'accuracy': 0.9626, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6902}
+val: {'epoch': 5, 'loss': 0.097, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8293, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6941}
+train: {'epoch': 5, 'eta': 1777313.3505, 'loss': 0.1452, 'lr': 0.001, 'params': 963905, 'time_iter': 18.6514, 'accuracy': 0.9625, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7095}
+val: {'epoch': 6, 'loss': 0.1008, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6516, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7108}
+train: {'epoch': 6, 'eta': 1760181.0329, 'loss': 0.1434, 'lr': 0.001, 'params': 963905, 'time_iter': 18.5046, 'accuracy': 0.9625, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.719}
+val: {'epoch': 7, 'loss': 0.0983, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8095, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7351}
+train: {'epoch': 7, 'eta': 1739575.2725, 'loss': 0.1412, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2514, 'accuracy': 0.9625, 'precision': 0.25, 'recall': 0.0008, 'f1': 0.0016, 'auc': 0.7263}
+val: {'epoch': 8, 'loss': 0.0985, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7102, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7243}
+train: {'epoch': 8, 'eta': 1721604.3893, 'loss': 0.141, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4656, 'accuracy': 0.9626, 'precision': 0.5, 'recall': 0.0041, 'f1': 0.0081, 'auc': 0.7283}
+val: {'epoch': 9, 'loss': 0.1019, 'lr': 0.001, 'params': 963905, 'time_iter': 3.17, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6703}
+train: {'epoch': 9, 'eta': 1701663.9573, 'loss': 0.1402, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2752, 'accuracy': 0.9627, 'precision': 0.5833, 'recall': 0.0114, 'f1': 0.0223, 'auc': 0.7373}
+val: {'epoch': 10, 'loss': 0.1067, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6571, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7264}
+train: {'epoch': 10, 'eta': 1686089.2859, 'loss': 0.1391, 'lr': 0.001, 'params': 963905, 'time_iter': 18.7748, 'accuracy': 0.9627, 'precision': 0.575, 'recall': 0.0187, 'f1': 0.0362, 'auc': 0.7325}
+val: {'epoch': 11, 'loss': 0.1045, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6331, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6862}
+train: {'epoch': 11, 'eta': 1666853.6346, 'loss': 0.1383, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3724, 'accuracy': 0.963, 'precision': 0.629, 'recall': 0.0317, 'f1': 0.0603, 'auc': 0.7348}
+val: {'epoch': 12, 'loss': 0.108, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7587, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7176}
+train: {'epoch': 12, 'eta': 1644785.6467, 'loss': 0.1384, 'lr': 0.001, 'params': 963905, 'time_iter': 17.9537, 'accuracy': 0.9626, 'precision': 0.5102, 'recall': 0.0203, 'f1': 0.039, 'auc': 0.7395}
+val: {'epoch': 13, 'loss': 0.1024, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6476, 'accuracy': 0.981, 'precision': 0.8, 'recall': 0.0494, 'f1': 0.093, 'auc': 0.6967}
+train: {'epoch': 13, 'eta': 1624489.1583, 'loss': 0.1422, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1527, 'accuracy': 0.9628, 'precision': 0.5854, 'recall': 0.0195, 'f1': 0.0377, 'auc': 0.7222}
+val: {'epoch': 14, 'loss': 0.1113, 'lr': 0.001, 'params': 963905, 'time_iter': 2.813, 'accuracy': 0.981, 'precision': 1.0, 'recall': 0.037, 'f1': 0.0714, 'auc': 0.6634}
+train: {'epoch': 14, 'eta': 1604931.9227, 'loss': 0.1472, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2425, 'accuracy': 0.9626, 'precision': 0.5652, 'recall': 0.0106, 'f1': 0.0207, 'auc': 0.689}
+val: {'epoch': 15, 'loss': 0.1043, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6536, 'accuracy': 0.9815, 'precision': 0.7778, 'recall': 0.0864, 'f1': 0.1556, 'auc': 0.7227}
+train: {'epoch': 15, 'eta': 1585765.5056, 'loss': 0.1463, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2967, 'accuracy': 0.9629, 'precision': 0.7273, 'recall': 0.013, 'f1': 0.0255, 'auc': 0.7057}
+val: {'epoch': 16, 'loss': 0.1027, 'lr': 0.001, 'params': 963905, 'time_iter': 3.038, 'accuracy': 0.9815, 'precision': 1.0, 'recall': 0.0617, 'f1': 0.1163, 'auc': 0.6649}
+train: {'epoch': 16, 'eta': 1568202.2672, 'loss': 0.1454, 'lr': 0.001, 'params': 963905, 'time_iter': 18.6079, 'accuracy': 0.9627, 'precision': 0.5714, 'recall': 0.013, 'f1': 0.0254, 'auc': 0.6965}
+val: {'epoch': 17, 'loss': 0.1027, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7267, 'accuracy': 0.982, 'precision': 1.0, 'recall': 0.0864, 'f1': 0.1591, 'auc': 0.6216}
+train: {'epoch': 17, 'eta': 1549660.7858, 'loss': 0.1429, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4367, 'accuracy': 0.9631, 'precision': 0.6735, 'recall': 0.0268, 'f1': 0.0515, 'auc': 0.7159}
+val: {'epoch': 18, 'loss': 0.1021, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8392, 'accuracy': 0.9818, 'precision': 1.0, 'recall': 0.0741, 'f1': 0.1379, 'auc': 0.6725}
+train: {'epoch': 18, 'eta': 1531663.2165, 'loss': 0.1431, 'lr': 0.001, 'params': 963905, 'time_iter': 18.571, 'accuracy': 0.963, 'precision': 0.675, 'recall': 0.0219, 'f1': 0.0425, 'auc': 0.715}
+val: {'epoch': 19, 'loss': 0.1005, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7041, 'accuracy': 0.982, 'precision': 1.0, 'recall': 0.0864, 'f1': 0.1591, 'auc': 0.661}
+train: {'epoch': 19, 'eta': 1514783.7253, 'loss': 0.144, 'lr': 0.001, 'params': 963905, 'time_iter': 18.8697, 'accuracy': 0.9632, 'precision': 0.7561, 'recall': 0.0252, 'f1': 0.0487, 'auc': 0.7082}
+val: {'epoch': 20, 'loss': 0.1036, 'lr': 0.001, 'params': 963905, 'time_iter': 2.636, 'accuracy': 0.9818, 'precision': 1.0, 'recall': 0.0741, 'f1': 0.1379, 'auc': 0.6732}
+train: {'epoch': 20, 'eta': 1494972.0589, 'loss': 0.1439, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1746, 'accuracy': 0.963, 'precision': 0.6522, 'recall': 0.0244, 'f1': 0.0469, 'auc': 0.7026}
+val: {'epoch': 21, 'loss': 0.1047, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6903, 'accuracy': 0.9815, 'precision': 0.7273, 'recall': 0.0988, 'f1': 0.1739, 'auc': 0.6822}
+train: {'epoch': 21, 'eta': 1476000.8032, 'loss': 0.142, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3773, 'accuracy': 0.9633, 'precision': 0.6761, 'recall': 0.039, 'f1': 0.0737, 'auc': 0.7162}
+val: {'epoch': 22, 'loss': 0.1025, 'lr': 0.001, 'params': 963905, 'time_iter': 2.5844, 'accuracy': 0.9818, 'precision': 0.75, 'recall': 0.1111, 'f1': 0.1935, 'auc': 0.6822}
+train: {'epoch': 22, 'eta': 1457968.5799, 'loss': 0.1397, 'lr': 0.001, 'params': 963905, 'time_iter': 18.6484, 'accuracy': 0.9628, 'precision': 0.5376, 'recall': 0.0406, 'f1': 0.0755, 'auc': 0.7374}
+val: {'epoch': 23, 'loss': 0.1028, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7641, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6572}
+train: {'epoch': 23, 'eta': 1438968.5885, 'loss': 0.1413, 'lr': 0.001, 'params': 963905, 'time_iter': 18.381, 'accuracy': 0.963, 'precision': 0.5741, 'recall': 0.0503, 'f1': 0.0925, 'auc': 0.7181}
+val: {'epoch': 24, 'loss': 0.1025, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6803, 'accuracy': 0.9808, 'precision': 0.5833, 'recall': 0.0864, 'f1': 0.1505, 'auc': 0.7079}
+train: {'epoch': 24, 'eta': 1420164.6181, 'loss': 0.1407, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4422, 'accuracy': 0.9633, 'precision': 0.6162, 'recall': 0.0495, 'f1': 0.0917, 'auc': 0.7244}
+val: {'epoch': 25, 'loss': 0.1026, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8035, 'accuracy': 0.9808, 'precision': 0.5625, 'recall': 0.1111, 'f1': 0.1856, 'auc': 0.7371}
+train: {'epoch': 25, 'eta': 1400161.2098, 'loss': 0.1399, 'lr': 0.001, 'params': 963905, 'time_iter': 18.0372, 'accuracy': 0.9634, 'precision': 0.6346, 'recall': 0.0536, 'f1': 0.0988, 'auc': 0.7329}
+val: {'epoch': 26, 'loss': 0.1023, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8195, 'accuracy': 0.9815, 'precision': 0.7778, 'recall': 0.0864, 'f1': 0.1556, 'auc': 0.7343}
+train: {'epoch': 26, 'eta': 1381898.216, 'loss': 0.1395, 'lr': 0.001, 'params': 963905, 'time_iter': 18.6244, 'accuracy': 0.9633, 'precision': 0.6106, 'recall': 0.056, 'f1': 0.1026, 'auc': 0.7291}
+val: {'epoch': 27, 'loss': 0.103, 'lr': 0.001, 'params': 963905, 'time_iter': 2.619, 'accuracy': 0.9815, 'precision': 0.7778, 'recall': 0.0864, 'f1': 0.1556, 'auc': 0.6834}
+train: {'epoch': 27, 'eta': 1362044.2049, 'loss': 0.1425, 'lr': 0.001, 'params': 963905, 'time_iter': 18.0474, 'accuracy': 0.9629, 'precision': 0.5682, 'recall': 0.0406, 'f1': 0.0758, 'auc': 0.7153}
+val: {'epoch': 28, 'loss': 0.1022, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8595, 'accuracy': 0.981, 'precision': 0.6364, 'recall': 0.0864, 'f1': 0.1522, 'auc': 0.7227}
+train: {'epoch': 28, 'eta': 1342069.1798, 'loss': 0.1418, 'lr': 0.001, 'params': 963905, 'time_iter': 17.9643, 'accuracy': 0.9629, 'precision': 0.5618, 'recall': 0.0406, 'f1': 0.0757, 'auc': 0.7116}
+val: {'epoch': 29, 'loss': 0.1017, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6673, 'accuracy': 0.981, 'precision': 1.0, 'recall': 0.037, 'f1': 0.0714, 'auc': 0.7203}
+train: {'epoch': 29, 'eta': 1323075.9809, 'loss': 0.1423, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3318, 'accuracy': 0.9633, 'precision': 0.6211, 'recall': 0.0479, 'f1': 0.0889, 'auc': 0.7206}
+val: {'epoch': 30, 'loss': 0.0955, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6977, 'accuracy': 0.9818, 'precision': 1.0, 'recall': 0.0741, 'f1': 0.1379, 'auc': 0.7717}
+train: {'epoch': 30, 'eta': 1303455.9022, 'loss': 0.1426, 'lr': 0.001, 'params': 963905, 'time_iter': 18.0545, 'accuracy': 0.9631, 'precision': 0.6462, 'recall': 0.0341, 'f1': 0.0648, 'auc': 0.7279}
+val: {'epoch': 31, 'loss': 0.0971, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6416, 'accuracy': 0.9815, 'precision': 1.0, 'recall': 0.0617, 'f1': 0.1163, 'auc': 0.7202}
+train: {'epoch': 31, 'eta': 1284140.7842, 'loss': 0.1421, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1642, 'accuracy': 0.9633, 'precision': 0.7273, 'recall': 0.0325, 'f1': 0.0622, 'auc': 0.7251}
+val: {'epoch': 32, 'loss': 0.0975, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8649, 'accuracy': 0.981, 'precision': 0.7143, 'recall': 0.0617, 'f1': 0.1136, 'auc': 0.7216}
+train: {'epoch': 32, 'eta': 1265121.0189, 'loss': 0.1408, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2874, 'accuracy': 0.963, 'precision': 0.6471, 'recall': 0.0268, 'f1': 0.0514, 'auc': 0.7341}
+val: {'epoch': 33, 'loss': 0.102, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6681, 'accuracy': 0.9815, 'precision': 0.8571, 'recall': 0.0741, 'f1': 0.1364, 'auc': 0.695}
+train: {'epoch': 33, 'eta': 1246016.1922, 'loss': 0.14, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2389, 'accuracy': 0.963, 'precision': 0.6094, 'recall': 0.0317, 'f1': 0.0602, 'auc': 0.7414}
+val: {'epoch': 34, 'loss': 0.1021, 'lr': 0.001, 'params': 963905, 'time_iter': 3.3616, 'accuracy': 0.9818, 'precision': 0.7143, 'recall': 0.1235, 'f1': 0.2105, 'auc': 0.6827}
+train: {'epoch': 34, 'eta': 1227379.1497, 'loss': 0.1402, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4736, 'accuracy': 0.9632, 'precision': 0.6562, 'recall': 0.0341, 'f1': 0.0648, 'auc': 0.7365}
+val: {'epoch': 35, 'loss': 0.1015, 'lr': 0.001, 'params': 963905, 'time_iter': 3.0059, 'accuracy': 0.981, 'precision': 0.6, 'recall': 0.1111, 'f1': 0.1875, 'auc': 0.7177}
+train: {'epoch': 35, 'eta': 1209633.0698, 'loss': 0.1407, 'lr': 0.001, 'params': 963905, 'time_iter': 18.9719, 'accuracy': 0.9631, 'precision': 0.6667, 'recall': 0.0276, 'f1': 0.053, 'auc': 0.7328}
+val: {'epoch': 36, 'loss': 0.0941, 'lr': 0.001, 'params': 963905, 'time_iter': 3.0624, 'accuracy': 0.9813, 'precision': 0.6429, 'recall': 0.1111, 'f1': 0.1895, 'auc': 0.7609}
+train: {'epoch': 36, 'eta': 1190786.8819, 'loss': 0.1405, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3989, 'accuracy': 0.9633, 'precision': 0.6354, 'recall': 0.0495, 'f1': 0.0919, 'auc': 0.7267}
+val: {'epoch': 37, 'loss': 0.116, 'lr': 0.001, 'params': 963905, 'time_iter': 2.761, 'accuracy': 0.981, 'precision': 1.0, 'recall': 0.037, 'f1': 0.0714, 'auc': 0.7537}
+train: {'epoch': 37, 'eta': 1171813.2936, 'loss': 0.1416, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3257, 'accuracy': 0.9629, 'precision': 0.6136, 'recall': 0.0219, 'f1': 0.0423, 'auc': 0.7265}
+val: {'epoch': 38, 'loss': 0.112, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6687, 'accuracy': 0.981, 'precision': 1.0, 'recall': 0.037, 'f1': 0.0714, 'auc': 0.6738}
+train: {'epoch': 38, 'eta': 1152513.6, 'loss': 0.145, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1193, 'accuracy': 0.9628, 'precision': 0.6818, 'recall': 0.0122, 'f1': 0.0239, 'auc': 0.7033}
+val: {'epoch': 39, 'loss': 0.1157, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7717, 'accuracy': 0.9808, 'precision': 1.0, 'recall': 0.0247, 'f1': 0.0482, 'auc': 0.7103}
+train: {'epoch': 39, 'eta': 1133582.9789, 'loss': 0.1464, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3372, 'accuracy': 0.9629, 'precision': 0.6875, 'recall': 0.0179, 'f1': 0.0348, 'auc': 0.6943}
+val: {'epoch': 40, 'loss': 0.1161, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6868, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6955}
+train: {'epoch': 40, 'eta': 1114177.7741, 'loss': 0.1442, 'lr': 0.001, 'params': 963905, 'time_iter': 18.0147, 'accuracy': 0.9627, 'precision': 0.5526, 'recall': 0.017, 'f1': 0.0331, 'auc': 0.7106}
+val: {'epoch': 41, 'loss': 0.1191, 'lr': 0.001, 'params': 963905, 'time_iter': 3.0451, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7018}
+train: {'epoch': 41, 'eta': 1095035.3271, 'loss': 0.1441, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1705, 'accuracy': 0.9629, 'precision': 0.6, 'recall': 0.0244, 'f1': 0.0468, 'auc': 0.7117}
+val: {'epoch': 42, 'loss': 0.1195, 'lr': 0.001, 'params': 963905, 'time_iter': 3.0577, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6927}
+train: {'epoch': 42, 'eta': 1076444.2448, 'loss': 0.1445, 'lr': 0.001, 'params': 963905, 'time_iter': 18.5596, 'accuracy': 0.9628, 'precision': 0.7692, 'recall': 0.0081, 'f1': 0.0161, 'auc': 0.7186}
+val: {'epoch': 43, 'loss': 0.1165, 'lr': 0.001, 'params': 963905, 'time_iter': 3.2242, 'accuracy': 0.9801, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6811}
+train: {'epoch': 43, 'eta': 1057796.025, 'loss': 0.1464, 'lr': 0.001, 'params': 963905, 'time_iter': 18.5335, 'accuracy': 0.9626, 'precision': 0.5714, 'recall': 0.0097, 'f1': 0.0192, 'auc': 0.699}
+val: {'epoch': 44, 'loss': 0.1172, 'lr': 0.001, 'params': 963905, 'time_iter': 2.64, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6834}
+train: {'epoch': 44, 'eta': 1038684.7382, 'loss': 0.145, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1803, 'accuracy': 0.9628, 'precision': 0.75, 'recall': 0.0097, 'f1': 0.0192, 'auc': 0.7095}
+val: {'epoch': 45, 'loss': 0.1076, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6895, 'accuracy': 0.9813, 'precision': 0.75, 'recall': 0.0741, 'f1': 0.1348, 'auc': 0.6873}
+train: {'epoch': 45, 'eta': 1019611.4749, 'loss': 0.1417, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1972, 'accuracy': 0.9629, 'precision': 0.6316, 'recall': 0.0195, 'f1': 0.0378, 'auc': 0.734}
+val: {'epoch': 46, 'loss': 0.1023, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8568, 'accuracy': 0.9815, 'precision': 0.7778, 'recall': 0.0864, 'f1': 0.1556, 'auc': 0.689}
+train: {'epoch': 46, 'eta': 1000617.0202, 'loss': 0.1413, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2524, 'accuracy': 0.9629, 'precision': 0.5833, 'recall': 0.0341, 'f1': 0.0644, 'auc': 0.7295}
+val: {'epoch': 47, 'loss': 0.1061, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6607, 'accuracy': 0.981, 'precision': 0.8, 'recall': 0.0494, 'f1': 0.093, 'auc': 0.6856}
+train: {'epoch': 47, 'eta': 981825.006, 'loss': 0.141, 'lr': 0.001, 'params': 963905, 'time_iter': 18.426, 'accuracy': 0.9628, 'precision': 0.56, 'recall': 0.0341, 'f1': 0.0643, 'auc': 0.7283}
+val: {'epoch': 48, 'loss': 0.1083, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8355, 'accuracy': 0.9818, 'precision': 0.875, 'recall': 0.0864, 'f1': 0.1573, 'auc': 0.6846}
+train: {'epoch': 48, 'eta': 962811.0103, 'loss': 0.1417, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2252, 'accuracy': 0.9627, 'precision': 0.5441, 'recall': 0.03, 'f1': 0.0569, 'auc': 0.7245}
+val: {'epoch': 49, 'loss': 0.1125, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6682, 'accuracy': 0.9818, 'precision': 1.0, 'recall': 0.0741, 'f1': 0.1379, 'auc': 0.6615}
+train: {'epoch': 49, 'eta': 944508.3176, 'loss': 0.14, 'lr': 0.001, 'params': 963905, 'time_iter': 18.9063, 'accuracy': 0.963, 'precision': 0.6029, 'recall': 0.0333, 'f1': 0.0631, 'auc': 0.737}
+val: {'epoch': 50, 'loss': 0.112, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8485, 'accuracy': 0.9813, 'precision': 1.0, 'recall': 0.0494, 'f1': 0.0941, 'auc': 0.694}
+train: {'epoch': 50, 'eta': 925602.6268, 'loss': 0.1407, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3421, 'accuracy': 0.9629, 'precision': 0.5747, 'recall': 0.0406, 'f1': 0.0758, 'auc': 0.7365}
+val: {'epoch': 51, 'loss': 0.1101, 'lr': 0.001, 'params': 963905, 'time_iter': 2.9834, 'accuracy': 0.981, 'precision': 0.6364, 'recall': 0.0864, 'f1': 0.1522, 'auc': 0.7152}
+train: {'epoch': 51, 'eta': 906836.4815, 'loss': 0.1404, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4877, 'accuracy': 0.9628, 'precision': 0.58, 'recall': 0.0235, 'f1': 0.0452, 'auc': 0.7325}
+val: {'epoch': 52, 'loss': 0.1029, 'lr': 0.001, 'params': 963905, 'time_iter': 3.1544, 'accuracy': 0.9815, 'precision': 0.7273, 'recall': 0.0988, 'f1': 0.1739, 'auc': 0.7164}
+train: {'epoch': 52, 'eta': 888015.341, 'loss': 0.1402, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4381, 'accuracy': 0.9629, 'precision': 0.5811, 'recall': 0.0349, 'f1': 0.0658, 'auc': 0.7355}
+val: {'epoch': 53, 'loss': 0.0982, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6251, 'accuracy': 0.9813, 'precision': 0.75, 'recall': 0.0741, 'f1': 0.1348, 'auc': 0.7289}
+train: {'epoch': 53, 'eta': 869109.4932, 'loss': 0.1402, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3479, 'accuracy': 0.9635, 'precision': 0.6705, 'recall': 0.0479, 'f1': 0.0894, 'auc': 0.7304}
+val: {'epoch': 54, 'loss': 0.1117, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6681, 'accuracy': 0.981, 'precision': 1.0, 'recall': 0.037, 'f1': 0.0714, 'auc': 0.6789}
+train: {'epoch': 54, 'eta': 850223.4331, 'loss': 0.1406, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3703, 'accuracy': 0.9633, 'precision': 0.7069, 'recall': 0.0333, 'f1': 0.0636, 'auc': 0.7322}
+val: {'epoch': 55, 'loss': 0.1055, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8053, 'accuracy': 0.9818, 'precision': 0.875, 'recall': 0.0864, 'f1': 0.1573, 'auc': 0.6902}
+train: {'epoch': 55, 'eta': 830987.5116, 'loss': 0.1403, 'lr': 0.001, 'params': 963905, 'time_iter': 17.9383, 'accuracy': 0.9628, 'precision': 0.569, 'recall': 0.0268, 'f1': 0.0512, 'auc': 0.7308}
+val: {'epoch': 56, 'loss': 0.1069, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6272, 'accuracy': 0.9808, 'precision': 0.75, 'recall': 0.037, 'f1': 0.0706, 'auc': 0.6519}
+train: {'epoch': 56, 'eta': 812203.795, 'loss': 0.1401, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4857, 'accuracy': 0.9633, 'precision': 0.6494, 'recall': 0.0406, 'f1': 0.0764, 'auc': 0.7355}
+val: {'epoch': 57, 'loss': 0.1089, 'lr': 0.001, 'params': 963905, 'time_iter': 3.1203, 'accuracy': 0.9805, 'precision': 0.6667, 'recall': 0.0247, 'f1': 0.0476, 'auc': 0.7051}
+train: {'epoch': 57, 'eta': 793247.1344, 'loss': 0.1406, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2646, 'accuracy': 0.9632, 'precision': 0.6438, 'recall': 0.0381, 'f1': 0.072, 'auc': 0.7256}
+val: {'epoch': 58, 'loss': 0.1057, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7147, 'accuracy': 0.9818, 'precision': 0.875, 'recall': 0.0864, 'f1': 0.1573, 'auc': 0.6882}
+train: {'epoch': 58, 'eta': 774449.3726, 'loss': 0.14, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4791, 'accuracy': 0.9633, 'precision': 0.6622, 'recall': 0.0398, 'f1': 0.075, 'auc': 0.7333}
+val: {'epoch': 59, 'loss': 0.1051, 'lr': 0.001, 'params': 963905, 'time_iter': 3.0499, 'accuracy': 0.9818, 'precision': 0.875, 'recall': 0.0864, 'f1': 0.1573, 'auc': 0.7075}
+train: {'epoch': 59, 'eta': 755293.5355, 'loss': 0.139, 'lr': 0.001, 'params': 963905, 'time_iter': 17.9677, 'accuracy': 0.9634, 'precision': 0.6261, 'recall': 0.0584, 'f1': 0.1069, 'auc': 0.7384}
+val: {'epoch': 60, 'loss': 0.1117, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8738, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6518}
+train: {'epoch': 60, 'eta': 736303.0117, 'loss': 0.1396, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1857, 'accuracy': 0.9635, 'precision': 0.66, 'recall': 0.0536, 'f1': 0.0991, 'auc': 0.7367}
+val: {'epoch': 61, 'loss': 0.1138, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6399, 'accuracy': 0.9805, 'precision': 1.0, 'recall': 0.0123, 'f1': 0.0244, 'auc': 0.6799}
+train: {'epoch': 61, 'eta': 717550.3628, 'loss': 0.1394, 'lr': 0.001, 'params': 963905, 'time_iter': 18.5487, 'accuracy': 0.9633, 'precision': 0.592, 'recall': 0.0601, 'f1': 0.1091, 'auc': 0.726}
+val: {'epoch': 62, 'loss': 0.1118, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7501, 'accuracy': 0.9813, 'precision': 0.8333, 'recall': 0.0617, 'f1': 0.1149, 'auc': 0.7058}
+train: {'epoch': 62, 'eta': 698511.777, 'loss': 0.1387, 'lr': 0.001, 'params': 963905, 'time_iter': 18.0931, 'accuracy': 0.9636, 'precision': 0.6435, 'recall': 0.0601, 'f1': 0.1099, 'auc': 0.7347}
+val: {'epoch': 63, 'loss': 0.1072, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6125, 'accuracy': 0.9815, 'precision': 0.6923, 'recall': 0.1111, 'f1': 0.1915, 'auc': 0.738}
+train: {'epoch': 63, 'eta': 679627.0345, 'loss': 0.139, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3362, 'accuracy': 0.9632, 'precision': 0.5758, 'recall': 0.0617, 'f1': 0.1114, 'auc': 0.7391}
+val: {'epoch': 64, 'loss': 0.1117, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8014, 'accuracy': 0.9818, 'precision': 0.875, 'recall': 0.0864, 'f1': 0.1573, 'auc': 0.6753}
+train: {'epoch': 64, 'eta': 660526.6056, 'loss': 0.1399, 'lr': 0.001, 'params': 963905, 'time_iter': 17.946, 'accuracy': 0.963, 'precision': 0.569, 'recall': 0.0536, 'f1': 0.0979, 'auc': 0.729}
+val: {'epoch': 65, 'loss': 0.1149, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6617, 'accuracy': 0.9813, 'precision': 0.75, 'recall': 0.0741, 'f1': 0.1348, 'auc': 0.6801}
+train: {'epoch': 65, 'eta': 641552.1356, 'loss': 0.139, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1474, 'accuracy': 0.9633, 'precision': 0.625, 'recall': 0.0528, 'f1': 0.0973, 'auc': 0.74}
+val: {'epoch': 66, 'loss': 0.1217, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8043, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6891}
+train: {'epoch': 66, 'eta': 622628.0304, 'loss': 0.142, 'lr': 0.001, 'params': 963905, 'time_iter': 18.229, 'accuracy': 0.9632, 'precision': 0.5909, 'recall': 0.0528, 'f1': 0.0969, 'auc': 0.709}
+val: {'epoch': 67, 'loss': 0.1232, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6523, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6734}
+train: {'epoch': 67, 'eta': 603680.2076, 'loss': 0.1413, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1699, 'accuracy': 0.9632, 'precision': 0.5877, 'recall': 0.0544, 'f1': 0.0996, 'auc': 0.7123}
+val: {'epoch': 68, 'loss': 0.1067, 'lr': 0.001, 'params': 963905, 'time_iter': 3.2027, 'accuracy': 0.981, 'precision': 0.6, 'recall': 0.1111, 'f1': 0.1875, 'auc': 0.6906}
+train: {'epoch': 68, 'eta': 584690.12, 'loss': 0.1406, 'lr': 0.001, 'params': 963905, 'time_iter': 18.0628, 'accuracy': 0.9633, 'precision': 0.595, 'recall': 0.0584, 'f1': 0.1064, 'auc': 0.7232}
+val: {'epoch': 69, 'loss': 0.1101, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6913, 'accuracy': 0.9813, 'precision': 0.7, 'recall': 0.0864, 'f1': 0.1538, 'auc': 0.6503}
+train: {'epoch': 69, 'eta': 565852.58, 'loss': 0.14, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3826, 'accuracy': 0.9632, 'precision': 0.5778, 'recall': 0.0633, 'f1': 0.1141, 'auc': 0.7213}
+val: {'epoch': 70, 'loss': 0.1115, 'lr': 0.001, 'params': 963905, 'time_iter': 2.5829, 'accuracy': 0.9813, 'precision': 0.7, 'recall': 0.0864, 'f1': 0.1538, 'auc': 0.7451}
+train: {'epoch': 70, 'eta': 547058.6173, 'loss': 0.1403, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4915, 'accuracy': 0.9635, 'precision': 0.6415, 'recall': 0.0552, 'f1': 0.1016, 'auc': 0.7206}
+val: {'epoch': 71, 'loss': 0.1094, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8049, 'accuracy': 0.9813, 'precision': 0.6667, 'recall': 0.0988, 'f1': 0.172, 'auc': 0.7307}
+train: {'epoch': 71, 'eta': 528054.9393, 'loss': 0.1423, 'lr': 0.001, 'params': 963905, 'time_iter': 17.9836, 'accuracy': 0.9632, 'precision': 0.5909, 'recall': 0.0528, 'f1': 0.0969, 'auc': 0.7137}
+val: {'epoch': 72, 'loss': 0.1124, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6732, 'accuracy': 0.981, 'precision': 0.8, 'recall': 0.0494, 'f1': 0.093, 'auc': 0.7142}
+train: {'epoch': 72, 'eta': 509140.6976, 'loss': 0.1414, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1827, 'accuracy': 0.9636, 'precision': 0.6667, 'recall': 0.0552, 'f1': 0.1019, 'auc': 0.7105}
+val: {'epoch': 73, 'loss': 0.1109, 'lr': 0.001, 'params': 963905, 'time_iter': 2.9128, 'accuracy': 0.9813, 'precision': 0.6667, 'recall': 0.0988, 'f1': 0.172, 'auc': 0.7103}
+train: {'epoch': 73, 'eta': 490134.9579, 'loss': 0.1413, 'lr': 0.001, 'params': 963905, 'time_iter': 17.9144, 'accuracy': 0.9636, 'precision': 0.6214, 'recall': 0.0706, 'f1': 0.1268, 'auc': 0.7156}
+val: {'epoch': 74, 'loss': 0.105, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7657, 'accuracy': 0.9808, 'precision': 0.6, 'recall': 0.0741, 'f1': 0.1319, 'auc': 0.7234}
+train: {'epoch': 74, 'eta': 471257.1354, 'loss': 0.1415, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2429, 'accuracy': 0.9633, 'precision': 0.5912, 'recall': 0.0657, 'f1': 0.1183, 'auc': 0.7183}
+val: {'epoch': 75, 'loss': 0.1086, 'lr': 0.001, 'params': 963905, 'time_iter': 3.2033, 'accuracy': 0.9805, 'precision': 0.6667, 'recall': 0.0247, 'f1': 0.0476, 'auc': 0.7235}
+train: {'epoch': 75, 'eta': 452306.6079, 'loss': 0.142, 'lr': 0.001, 'params': 963905, 'time_iter': 18.0105, 'accuracy': 0.9631, 'precision': 0.6173, 'recall': 0.0406, 'f1': 0.0762, 'auc': 0.7203}
+val: {'epoch': 76, 'loss': 0.1076, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7701, 'accuracy': 0.9808, 'precision': 0.625, 'recall': 0.0617, 'f1': 0.1124, 'auc': 0.6848}
+train: {'epoch': 76, 'eta': 433489.3388, 'loss': 0.1428, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4088, 'accuracy': 0.9629, 'precision': 0.5714, 'recall': 0.0325, 'f1': 0.0614, 'auc': 0.7071}
+val: {'epoch': 77, 'loss': 0.1093, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6652, 'accuracy': 0.9805, 'precision': 0.5385, 'recall': 0.0864, 'f1': 0.1489, 'auc': 0.6803}
+train: {'epoch': 77, 'eta': 414664.9418, 'loss': 0.1407, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3953, 'accuracy': 0.9634, 'precision': 0.633, 'recall': 0.056, 'f1': 0.1029, 'auc': 0.7234}
+val: {'epoch': 78, 'loss': 0.105, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7804, 'accuracy': 0.9818, 'precision': 1.0, 'recall': 0.0741, 'f1': 0.1379, 'auc': 0.7145}
+train: {'epoch': 78, 'eta': 395833.1348, 'loss': 0.1404, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3779, 'accuracy': 0.9636, 'precision': 0.6341, 'recall': 0.0633, 'f1': 0.1151, 'auc': 0.7205}
+val: {'epoch': 79, 'loss': 0.1139, 'lr': 0.001, 'params': 963905, 'time_iter': 2.5727, 'accuracy': 0.9815, 'precision': 0.7273, 'recall': 0.0988, 'f1': 0.1739, 'auc': 0.6783}
+train: {'epoch': 79, 'eta': 377009.0719, 'loss': 0.1393, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4157, 'accuracy': 0.9633, 'precision': 0.6068, 'recall': 0.0576, 'f1': 0.1053, 'auc': 0.7297}
+val: {'epoch': 80, 'loss': 0.1098, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8173, 'accuracy': 0.9815, 'precision': 0.8571, 'recall': 0.0741, 'f1': 0.1364, 'auc': 0.7392}
+train: {'epoch': 80, 'eta': 358106.2596, 'loss': 0.1409, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1023, 'accuracy': 0.9633, 'precision': 0.6154, 'recall': 0.0519, 'f1': 0.0958, 'auc': 0.7212}
+val: {'epoch': 81, 'loss': 0.1193, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6482, 'accuracy': 0.9805, 'precision': 1.0, 'recall': 0.0123, 'f1': 0.0244, 'auc': 0.7046}
+train: {'epoch': 81, 'eta': 339263.7437, 'loss': 0.1408, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3395, 'accuracy': 0.9633, 'precision': 0.6404, 'recall': 0.0463, 'f1': 0.0863, 'auc': 0.7255}
+val: {'epoch': 82, 'loss': 0.1114, 'lr': 0.001, 'params': 963905, 'time_iter': 3.1828, 'accuracy': 0.981, 'precision': 0.6364, 'recall': 0.0864, 'f1': 0.1522, 'auc': 0.7093}
+train: {'epoch': 82, 'eta': 320407.8059, 'loss': 0.1438, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2791, 'accuracy': 0.9631, 'precision': 0.6491, 'recall': 0.03, 'f1': 0.0574, 'auc': 0.7038}
+val: {'epoch': 83, 'loss': 0.1192, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7219, 'accuracy': 0.9808, 'precision': 1.0, 'recall': 0.0247, 'f1': 0.0482, 'auc': 0.7009}
+train: {'epoch': 83, 'eta': 301592.9488, 'loss': 0.1461, 'lr': 0.001, 'params': 963905, 'time_iter': 18.483, 'accuracy': 0.9632, 'precision': 0.6571, 'recall': 0.0373, 'f1': 0.0707, 'auc': 0.6853}
+val: {'epoch': 84, 'loss': 0.1167, 'lr': 0.001, 'params': 963905, 'time_iter': 2.748, 'accuracy': 0.9808, 'precision': 0.6667, 'recall': 0.0494, 'f1': 0.092, 'auc': 0.6549}
+train: {'epoch': 84, 'eta': 282764.1269, 'loss': 0.1454, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4325, 'accuracy': 0.9632, 'precision': 0.6351, 'recall': 0.0381, 'f1': 0.072, 'auc': 0.6935}
+val: {'epoch': 85, 'loss': 0.1132, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8259, 'accuracy': 0.9813, 'precision': 1.0, 'recall': 0.0494, 'f1': 0.0941, 'auc': 0.7023}
+train: {'epoch': 85, 'eta': 263884.1109, 'loss': 0.1433, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1461, 'accuracy': 0.9632, 'precision': 0.617, 'recall': 0.0471, 'f1': 0.0875, 'auc': 0.7026}
+val: {'epoch': 86, 'loss': 0.1299, 'lr': 0.001, 'params': 963905, 'time_iter': 2.5735, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6841}
+train: {'epoch': 86, 'eta': 245054.7567, 'loss': 0.1431, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4445, 'accuracy': 0.9635, 'precision': 0.6667, 'recall': 0.0503, 'f1': 0.0936, 'auc': 0.6999}
+val: {'epoch': 87, 'loss': 0.1363, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7679, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.681}
+train: {'epoch': 87, 'eta': 226176.1549, 'loss': 0.1461, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1179, 'accuracy': 0.9627, 'precision': 0.5357, 'recall': 0.0244, 'f1': 0.0466, 'auc': 0.6908}
+val: {'epoch': 88, 'loss': 0.1402, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6413, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6596}
+train: {'epoch': 88, 'eta': 207347.5763, 'loss': 0.1501, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4696, 'accuracy': 0.9625, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6833}
+val: {'epoch': 89, 'loss': 0.1545, 'lr': 0.001, 'params': 963905, 'time_iter': 2.8191, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.619}
+train: {'epoch': 89, 'eta': 188519.9126, 'loss': 0.1474, 'lr': 0.001, 'params': 963905, 'time_iter': 18.512, 'accuracy': 0.9625, 'precision': 0.4286, 'recall': 0.0024, 'f1': 0.0048, 'auc': 0.6975}
+val: {'epoch': 90, 'loss': 0.146, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7115, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6832}
+train: {'epoch': 90, 'eta': 169671.7287, 'loss': 0.1459, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3581, 'accuracy': 0.9625, 'precision': 0.4, 'recall': 0.0032, 'f1': 0.0064, 'auc': 0.7001}
+val: {'epoch': 91, 'loss': 0.1351, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6162, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7115}
+train: {'epoch': 91, 'eta': 150824.0321, 'loss': 0.1465, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3738, 'accuracy': 0.9625, 'precision': 0.4, 'recall': 0.0032, 'f1': 0.0064, 'auc': 0.6977}
+val: {'epoch': 92, 'loss': 0.14, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7812, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.688}
+train: {'epoch': 92, 'eta': 131960.1231, 'loss': 0.1481, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1809, 'accuracy': 0.9626, 'precision': 0.6667, 'recall': 0.0049, 'f1': 0.0097, 'auc': 0.6909}
+val: {'epoch': 93, 'loss': 0.1258, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6257, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7278}
+train: {'epoch': 93, 'eta': 113111.7576, 'loss': 0.1476, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3671, 'accuracy': 0.9626, 'precision': 0.625, 'recall': 0.0041, 'f1': 0.0081, 'auc': 0.6934}
+val: {'epoch': 94, 'loss': 0.1299, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7723, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6726}
+train: {'epoch': 94, 'eta': 94253.517, 'loss': 0.1465, 'lr': 0.001, 'params': 963905, 'time_iter': 18.2047, 'accuracy': 0.9626, 'precision': 0.5333, 'recall': 0.0065, 'f1': 0.0128, 'auc': 0.6978}
+val: {'epoch': 95, 'loss': 0.1312, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6237, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6915}
+train: {'epoch': 95, 'eta': 75411.8431, 'loss': 0.1461, 'lr': 0.001, 'params': 963905, 'time_iter': 18.53, 'accuracy': 0.9626, 'precision': 0.5, 'recall': 0.0049, 'f1': 0.0096, 'auc': 0.7034}
+val: {'epoch': 96, 'loss': 0.1343, 'lr': 0.001, 'params': 963905, 'time_iter': 2.9818, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7198}
+train: {'epoch': 96, 'eta': 56552.9478, 'loss': 0.1456, 'lr': 0.001, 'params': 963905, 'time_iter': 18.1352, 'accuracy': 0.9626, 'precision': 0.6154, 'recall': 0.0065, 'f1': 0.0129, 'auc': 0.7086}
+val: {'epoch': 97, 'loss': 0.134, 'lr': 0.001, 'params': 963905, 'time_iter': 2.6691, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7116}
+train: {'epoch': 97, 'eta': 37704.061, 'loss': 0.1455, 'lr': 0.001, 'params': 963905, 'time_iter': 18.4195, 'accuracy': 0.9624, 'precision': 0.3333, 'recall': 0.0032, 'f1': 0.0064, 'auc': 0.704}
+val: {'epoch': 98, 'loss': 0.1318, 'lr': 0.001, 'params': 963905, 'time_iter': 3.3246, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6363}
+train: {'epoch': 98, 'eta': 18852.8064, 'loss': 0.1478, 'lr': 0.001, 'params': 963905, 'time_iter': 18.3954, 'accuracy': 0.9622, 'precision': 0.3, 'recall': 0.0073, 'f1': 0.0143, 'auc': 0.6917}
+val: {'epoch': 99, 'loss': 0.1329, 'lr': 0.001, 'params': 963905, 'time_iter': 2.7712, 'accuracy': 0.9803, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6617}
+train: {'epoch': 99, 'eta': 0.0, 'loss': 0.147, 'lr': 0.001, 'params': 963905, 'time_iter': 18.8661, 'accuracy': 0.9621, 'precision': 0.2083, 'recall': 0.0041, 'f1': 0.008, 'auc': 0.6929}
+test: {'epoch': 99, 'loss': 0.2097, 'lr': 0.001, 'params': 963905, 'time_iter': 2.3413, 'accuracy': 0.9684, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.6648}
+test: {'epoch': 30, 'loss': 0.1571, 'lr': 0.001, 'params': 963905, 'time_iter': 2.4256, 'accuracy': 0.9681, 'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'auc': 0.7302}
