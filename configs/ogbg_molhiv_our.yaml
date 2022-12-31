@@ -13,6 +13,7 @@ dataset:
   edge_encoder: true
   edge_encoder_bn: false
   edge_encoder_name: Bond
+  dir: /cluster/scratch/piattigi/datasets
 train:
   batch_size: 32
   eval_period: 1
@@ -21,15 +22,15 @@ train:
 model:
   type: dilated_gnn #[standard_gnn, dilated_gnn]
   loss_fun: cross_entropy
-  graph_pooling: mean
+  graph_pooling: max_of_concat_layers
 gnn:
   layers_pre_mp: 0 
   layers_mp: 5 #when model=dilated_gnn not used, but needs to be > 0
   layers_k1: 2 #only model=dilated_gnn
   layers_k2: 2 #only model=dilated_gnn
-  dilated_path_join: concat #[concat, add, none] #only model=dilated_gnn
+  dilated_path_join: add #[concat, add, none] #only model=dilated_gnn
   learn_alpha_residual_connection: true #[true, false] #only model=dilated_gnn
-  layer_type: eginconv #[egatconv, eginconv]
+  layer_type: edge_ginconv #[egatconv, eginconv]
   use_edge_features: true 
   layers_post_mp: 1
   dim_inner: 300 #hidden dim

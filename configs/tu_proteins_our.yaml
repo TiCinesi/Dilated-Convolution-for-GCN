@@ -1,11 +1,10 @@
-out_dir: tmp_processing
-num_workers: 8
+out_dir: tmp_results
+num_workers: 16
 metric_best: 'accuracy'
 metric_agg: 'argmax'
-accelerator: 'cpu'
 dataset:
   format: TU
-  name: ENZYMES
+  name: PROTEINS
   task: graph
   task_type: classification
   node_encoder: false
@@ -15,16 +14,13 @@ dataset:
   edge_encoder_bn: false
   edge_encoder_name: Bond
   dir: /cluster/scratch/piattigi/datasets
-  preprocesss_dataset: true #active only if dilated_gnn, and not use_edge_features = false
 train:
   batch_size: 32
   eval_period: 1
   ckpt_period: 100
   sampler: full_batch
-  early_stopping: true
-  early_stopping_patience: 100
 model:
-  type: dilated_gnn #[standard_gnn, dilated_gnn]
+  type: standard_gnn #[standard_gnn, dilated_gnn]
   loss_fun: cross_entropy
   graph_pooling: mean #[concat_across_sum_of_layers, mean]
 gnn:
@@ -34,9 +30,8 @@ gnn:
   layers_k2: 2 #only model=dilated_gnn
   dilated_path_join: concat #[concat, add, none] #only model=dilated_gnn
   learn_alpha_residual_connection: true #[true, false] #only model=dilated_gnn
-  layer_type: gcnconv #[egatconv, eginconv, gatconv, ginconv]
-  use_edge_features: false
-  edge_agg: add #[concat, add] #used only if layer type starts with edge_
+  layer_type: ginconv #[egatconv, eginconv, gatconv, ginconv]
+  use_edge_features: false 
   layers_post_mp: 1
   dim_inner: 32 #hidden dim
   batchnorm: true
@@ -47,9 +42,9 @@ gnn:
   normalize_adj: false
 optim:
   optimizer: adam
-  base_lr: 0.001
-  max_epoch: 2
-  scheduler: none #step_lr_epochs
+  base_lr: 0.01
+  max_epoch: 1000
+  scheduler: step_lr_epochs #step_lr_epochs
   weight_decay: 0.0 
   step_size: 50
   step_gamma: 0.5

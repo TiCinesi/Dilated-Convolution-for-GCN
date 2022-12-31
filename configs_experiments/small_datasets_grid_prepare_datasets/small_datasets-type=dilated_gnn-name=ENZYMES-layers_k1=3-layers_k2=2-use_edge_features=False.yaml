@@ -1,3 +1,4 @@
+accelerator: cpu
 dataset:
   dir: /cluster/scratch/piattigi/datasets
   edge_encoder: false
