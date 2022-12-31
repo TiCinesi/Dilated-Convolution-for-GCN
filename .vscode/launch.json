@@ -10,7 +10,16 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/configs/ogbg_molhiv.yaml", "--repeat",  "1"],
+            "args": ["--cfg", "${workspaceFolder}/configs/ogbg_molhiv_our.yaml", "--repeat",  "3"],
+            "justMyCode": false
+        },
+        {
+            "name": "tu test",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "args": ["--cfg", "${workspaceFolder}/configs/tu_proteins_our.yaml", "--repeat",  "1"],
             "justMyCode": false
         },
         {
@@ -56,7 +65,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/agg_batch.py",
             "console": "integratedTerminal",
-            "args": ["--dir", "${workspaceFolder}/results_experiments/ogbg-molhiv_grid_exp1"],
+            "args": ["--dir", "${workspaceFolder}/results_experiments/ogbg_molhiv_baseline_grid_design/"],
             "justMyCode": false
         },
         {
