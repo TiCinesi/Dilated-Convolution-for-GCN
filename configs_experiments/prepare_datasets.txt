@@ -2,9 +2,11 @@
 model.type type ['dilated_gnn']
 dataset.name name ['BZR_MD','COX2_MD','Cuneiform']
 gnn.use_edge_features use_edge_features [True]
+gnn.layer_type layer_type ['edge_ginconv']
 
 # our idea ONLYNODES
 model.type type ['dilated_gnn']
 dataset.name name ['ENZYMES','PROTEINS','DD','NCI1']
 gnn.layers_k1 layers_k1 [1,2,3]
 gnn.layers_k2 layers_k2 [1,2,3]
+gnn.use_edge_features use_edge_features [False]
