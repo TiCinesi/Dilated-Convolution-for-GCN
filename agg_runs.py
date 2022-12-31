@@ -35,10 +35,14 @@ def is_split(s):
 
 
 def join_list(l1, l2):
-    assert len(l1) == len(l2), \
-        'Results with different seeds must have the save format'
-    for i in range(len(l1)):
+    # assert len(l1) == len(l2), \
+    #     'Results with different seeds must have the save format'
+    for i in range(min(len(l1), len(l2))):
         l1[i] += l2[i]
+    
+    if len(l1) < len(l2):
+        for i in range(min(len(l1), len(l2)), max(len(l1), len(l2))):
+            l1.append(l2[i])
     return l1
 
 
