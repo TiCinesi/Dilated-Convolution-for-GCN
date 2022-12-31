@@ -61,13 +61,21 @@ class GNNDilatedStage(nn.Module):
 
     def forward(self, batch):
         #Classic layers
+        save_intermediate = cfg.model.graph_pooling == 'concat_across_sum_of_layers' or cfg.model.graph_pooling == 'max_of_concat_layers'
+        h = []
+
         for i in range(self.k1):
             batch = self.classic_layers[i](batch)
+            if save_intermediate and i < self.k1 - 1:
+                h.append(batch.x)
 
         x = batch.x
 
         if not cfg.gnn.act_on_last_layer_mp: #perform activation if not already done
             batch.x = self.act(batch.x)
+
+        if save_intermediate: #case agnostic of above option
+            h.append(batch.x)
 
         #Call GNN layers + weighted residual connections (check terminology)
         for step in range(self.k2):
@@ -80,6 +88,9 @@ class GNNDilatedStage(nn.Module):
                 new_batch.x = new_batch.x + batch.x
             
             batch = new_batch
+
+            if save_intermediate:
+                h.append(batch.x)
         
         #Skip connection between 2 paths
         if cfg.gnn.dilated_path_join == 'concat':
@@ -87,4 +98,6 @@ class GNNDilatedStage(nn.Module):
         elif cfg.gnn.dilated_path_join == 'add':
             batch.x = batch.x + x
         
+        if save_intermediate:
+            batch.x = torch.stack(h)
         return batch       

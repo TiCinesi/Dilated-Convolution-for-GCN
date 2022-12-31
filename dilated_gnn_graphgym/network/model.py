@@ -47,6 +47,13 @@ class DilatedGNNModel(nn.Module):
         dim_in = cfg.gnn.dim_inner
         if cfg.gnn.dilated_path_join == 'concat':
             dim_in = 2*dim_in
+        
+        if cfg.gnn.dilated_path_join == 'concat' and  (cfg.model.graph_pooling == 'concat_across_sum_of_layers' or cfg.model.graph_pooling == 'max_of_concat_layers'):
+            raise ValueError(f"Cannot activate both cfg.gnn.dilated_path_join={cfg.gnn.dilated_path_join}, and cfg.model.graph_pooling={cfg.model.graph_pooling}")
+
+        if cfg.model.graph_pooling == 'concat_across_sum_of_layers' or cfg.model.graph_pooling == 'max_of_concat_layers':
+            dim_in = dim_in * (cfg.gnn.layers_k1 + cfg.gnn.layers_k2)
+
         self.post_mp = GNNHead(dim_in=dim_in, dim_out=dim_out)
 
 

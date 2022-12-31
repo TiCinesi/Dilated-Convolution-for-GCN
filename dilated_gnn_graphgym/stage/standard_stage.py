@@ -53,7 +53,7 @@ class GNNStandardStage(nn.Module):
 
     def forward(self, batch):
         """"""
-        if cfg.model.graph_pooling == 'concat_across_sum_of_layers':
+        if cfg.model.graph_pooling == 'concat_across_sum_of_layers' or cfg.model.graph_pooling == 'max_of_concat_layers':
             h = []
             for i, layer in enumerate(self.children()):
                 x = batch.x

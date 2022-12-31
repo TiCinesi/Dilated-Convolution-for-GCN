@@ -43,7 +43,7 @@ class GNN(nn.Module):
                                num_layers=cfg.gnn.layers_mp)
         
         dim_in=cfg.gnn.dim_inner
-        if cfg.model.graph_pooling == 'concat_across_sum_of_layers':
+        if cfg.model.graph_pooling == 'concat_across_sum_of_layers' or cfg.model.graph_pooling == 'max_of_concat_layers':
             dim_in = dim_in * cfg.gnn.layers_mp
             
         self.post_mp = GNNHead(dim_in=dim_in, dim_out=dim_out)

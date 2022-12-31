@@ -65,6 +65,7 @@ def ___load_pyg(name, dataset_dir):
 
 
 cfg.gnn.use_edge_features = False
+cfg.dataset.preprocesss_dataset = False
 def create_loader():
     """
     Create data loader objects in array
@@ -84,9 +85,16 @@ def create_loader():
     else:
         transform = EmptyNodeFeatures()
 
+    pre_transform = None
+    if cfg.dataset.preprocesss_dataset and cfg.model.type == 'dilated_gnn' and not cfg.gnn.use_edge_features:
+        pre_transform = transform
+        transform = None
+        dataset_dir = f'{dataset_dir}/cache/k1={cfg.gnn.layers_k1}_k2={cfg.gnn.layers_k2}/'
+
+
     # Load from Pytorch Geometric dataset
     if format == 'TU':
-        dataset = create_loader_tu(name, dataset_dir, transform)
+        dataset = create_loader_tu(name, dataset_dir, transform, pre_transform)
     # Load from OGB formatted data
     elif format == 'OGB':
         dataset = create_loader_ogb(name, dataset_dir, transform)

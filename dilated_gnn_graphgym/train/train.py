@@ -9,6 +9,7 @@ from torch_geometric.graphgym.config import cfg
 from torch_geometric.graphgym.imports import pl
 from dilated_gnn_graphgym.train.logger import LoggerCallback
 from torch_geometric.graphgym.model_builder import GraphGymModule
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 
 
@@ -28,7 +29,8 @@ class GraphGymDataModule(LightningDataModule):
     def test_dataloader(self) -> DataLoader:
         return self.loaders[2]
 
-
+cfg.train.early_stopping = False
+cfg.train.early_stopping_patience = 100
 def train(model: GraphGymModule, datamodule, logger: bool = True,
           trainer_config: Optional[dict] = None):
     callbacks = []
@@ -38,6 +40,11 @@ def train(model: GraphGymModule, datamodule, logger: bool = True,
         ckpt_cbk = pl.callbacks.ModelCheckpoint(dirpath=get_ckpt_dir(), monitor=f'val_{cfg.metric_best}', mode='max' if cfg.metric_agg == 'argmax' else 'min',
         save_last=True, auto_insert_metric_name=True)
         callbacks.append(ckpt_cbk)
+
+    if cfg.train.early_stopping:
+        cbk = EarlyStopping(monitor=f'val_{cfg.metric_best}', mode='max' if cfg.metric_agg == 'argmax' else 'min',
+                            patience=cfg.train.early_stopping_patience)
+        callbacks.append(cbk)                        
 
     trainer_config = trainer_config or {}
     trainer = pl.Trainer(
