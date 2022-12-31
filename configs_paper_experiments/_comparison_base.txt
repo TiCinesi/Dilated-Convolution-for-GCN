@@ -1,6 +1,6 @@
 # our idea EDGES
 model.type type ['dilated_gnn']
-dataset.name name ['BZR_MD','COX2_MD','Cuneiform']
+dataset.name dataset ['BZR_MD','COX2_MD','Cuneiform']
 gnn.layer_type layer_type ['edge_ginconv']
 gnn.use_edge_features use_edge_features [True]
 gnn.layers_k1 layers_k1 [1,2,3]
@@ -15,7 +15,7 @@ model.graph_pooling graph_pooling ['mean']
 
 # our idea NODES
 model.type type ['dilated_gnn']
-dataset.name name ['ENZYMES','PROTEINS','DD','NCI1']
+dataset.name dataset ['ENZYMES','PROTEINS','DD','NCI1']
 gnn.layer_type layer_type ['ginconv_paper']
 gnn.use_edge_features use_edge_features [False]
 gnn.layers_k1 layers_k1 [1,2,3]
@@ -30,7 +30,7 @@ model.graph_pooling graph_pooling ['mean']
 
 # used for comparison
 model.type type ['standard_gnn']
-dataset.name name ['BZR_MD','COX2_MD','Cuneiform']
+dataset.name dataset ['BZR_MD','COX2_MD','Cuneiform']
 gnn.layer_type layer_type ['edge_ginconv']
 gnn.dim_inner dim_inner [32,64]
 gnn.layers_mp layers_mp [5]
@@ -43,7 +43,7 @@ model.graph_pooling graph_pooling ['mean']
 
 # used for comparison
 model.type type ['standard_gnn']
-dataset.name name ['ENZYMES','PROTEINS','DD','NCI1']
+dataset.name dataset ['ENZYMES','PROTEINS','DD','NCI1']
 gnn.layer_type layer_type ['ginconv_paper']
 gnn.dim_inner dim_inner [32,64]
 gnn.layers_mp layers_mp [5]

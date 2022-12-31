@@ -1,0 +1,57 @@
+accelerator: cpu
+dataset:
+  dir: /cluster/scratch/piattigi/datasets
+  edge_encoder: false
+  edge_encoder_bn: false
+  edge_encoder_name: Bond
+  format: TU
+  name: NCI1
+  node_encoder: false
+  node_encoder_bn: false
+  node_encoder_name: Atom
+  preprocesss_dataset: true
+  task: graph
+  task_type: classification
+gnn:
+  act: elu
+  act_on_last_layer_mp: false
+  agg: none
+  att_heads: 4
+  att_heads_final: 6
+  batchnorm: false
+  dilated_path_join: add
+  dim_inner: 64
+  dropout: 0.5
+  edge_agg: add
+  layer_type: gatconv
+  layers_k1: 1
+  layers_k2: 1
+  layers_mp: 5
+  layers_post_mp: 1
+  layers_pre_mp: 0
+  learn_alpha_residual_connection: true
+  normalize_adj: false
+  use_edge_features: false
+metric_agg: argmax
+metric_best: accuracy
+model:
+  graph_pooling: mean
+  loss_fun: cross_entropy
+  type: dilated_gnn
+num_workers: 8
+optim:
+  base_lr: 0.005
+  max_epoch: 1000
+  optimizer: adam
+  scheduler: none
+  step_gamma: 0.5
+  step_size: 50
+  weight_decay: 0.0
+out_dir: results_experiments/tu_base_grid_gat
+train:
+  batch_size: 32
+  ckpt_period: 100
+  early_stopping: true
+  early_stopping_patience: 500
+  eval_period: 1
+  sampler: full_batch
