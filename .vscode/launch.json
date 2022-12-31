@@ -65,7 +65,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/agg_batch.py",
             "console": "integratedTerminal",
-            "args": ["--dir", "${workspaceFolder}/results_experiments/ogbg_molhiv_baseline_grid_design/"],
+            "args": ["--dir", "${workspaceFolder}/results_experiments/base_grid_gcn/"],
             "justMyCode": false
         },
         {
@@ -74,7 +74,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/agg_run.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/configs_experiments/ogbg_molhiv_baseline_grid_comparison/ogbg_molhiv_baseline-type=standard_gnn-stage_type=standard_stage-layer_type=eginconv-act_on_last_layer_mp=True.yaml"],
+            "args": ["--cfg", "${workspaceFolder}/configs_experiments/base_grid_gcn/base-type=dilated_gnn-name=BZR_MD-layer=edge_gcnconv-edges=True-k1=1-k2=1-h=32-batch_size=32-lr=0.01-weight_decay=0.0005-batchnorm=False-act=relu-dropout=0.5-gpool=max_of_concat_layers.yaml"],
             "justMyCode": false
         }
 
