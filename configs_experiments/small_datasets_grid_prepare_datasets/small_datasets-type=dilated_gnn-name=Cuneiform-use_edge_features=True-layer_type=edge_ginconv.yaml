@@ -4,7 +4,7 @@ dataset:
   edge_encoder_bn: false
   edge_encoder_name: Bond
   format: TU
-  name: BZR_MD
+  name: Cuneiform
   node_encoder: false
   node_encoder_bn: false
   node_encoder_name: Atom
@@ -20,7 +20,7 @@ gnn:
   dim_inner: 32
   dropout: 0.5
   edge_agg: add
-  layer_type: gcnconv
+  layer_type: edge_ginconv
   layers_k1: 2
   layers_k2: 2
   layers_mp: 5
