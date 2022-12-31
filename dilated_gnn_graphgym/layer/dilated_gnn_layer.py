@@ -7,7 +7,7 @@ from torch_geometric.graphgym.models.layer import GeneralLayer, LayerConfig, new
 import torch_geometric.graphgym.register as register
 
 
-def create_dilated_gnn_layer(dim_in, dim_out, has_act=True):
+def create_dilated_gnn_layer(dim_in, dim_out, has_act=True, final=False):
     """
     Wrapper for a Dilated GNN layer
 
@@ -19,9 +19,18 @@ def create_dilated_gnn_layer(dim_in, dim_out, has_act=True):
     """
     layer_conf = new_layer_config(dim_in, dim_out, 1, has_act=has_act,
                                       has_bias=False, cfg=cfg)
-    return DilatedGeneralLayer(
-        cfg.gnn.layer_type,
-        layer_config=layer_conf)
+    
+    if  cfg.gnn.layer_type == 'edge_gatconv' or  cfg.gnn.layer_type == 'gatconv_paper':
+        num_heads = cfg.gnn.att_heads_final if final else cfg.gnn.att_heads
+        if not final:
+            layer_conf.dim_out = layer_conf.dim_out // num_heads
+        return DilatedGeneralLayer(
+            cfg.gnn.layer_type,
+            layer_config=layer_conf, num_heads=num_heads, attention_concat=not final)
+    else:
+        return DilatedGeneralLayer(
+            cfg.gnn.layer_type,
+            layer_config=layer_conf)
 
 
 class GeM(nn.Module):

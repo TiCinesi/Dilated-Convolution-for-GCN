@@ -7,7 +7,7 @@ import torch_geometric.graphgym.register as register
 from dilated_gnn_graphgym.layer.dilated_gnn_layer import create_dilated_gnn_layer
 from torch_geometric.graphgym.models.layer import GeneralLayer, new_layer_config
 
-def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
+def create_classic_gnn_layer(dim_in, dim_out, has_act=True, final=False):
     """
     Wrapper for a GNN layer
 
@@ -19,9 +19,18 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True):
     """
     layer_conf = new_layer_config(dim_in, dim_out, 1, has_act=has_act,
                                       has_bias=False, cfg=cfg)
-    return GeneralLayer(
-        cfg.gnn.layer_type,
-        layer_config=layer_conf)
+    
+    if  cfg.gnn.layer_type == 'edge_gatconv' or  cfg.gnn.layer_type == 'gatconv_paper':
+        num_heads = cfg.gnn.att_heads_final if final else cfg.gnn.att_heads
+        if not final:
+            layer_conf.dim_out = layer_conf.dim_out // num_heads
+        return GeneralLayer(
+            cfg.gnn.layer_type,
+            layer_config=layer_conf, num_heads=num_heads, attention_concat=not final)
+    else:
+        return GeneralLayer(
+            cfg.gnn.layer_type,
+            layer_config=layer_conf)
 
 
 cfg.gnn.layers_k1 = 1
@@ -52,9 +61,11 @@ class GNNDilatedStage(nn.Module):
 
         for i in range(self.k2):
             has_act = True
+            final = False
             if i == num_layers - 1: #last layer
                 has_act = cfg.gnn.act_on_last_layer_mp
-            layer = create_dilated_gnn_layer(dim_out, dim_out, has_act)
+                final = True
+            layer = create_dilated_gnn_layer(dim_out, dim_out, has_act,final)
             self.dilated_layers.append(layer)
 
         self.act = register.act_dict[cfg.gnn.act]()
