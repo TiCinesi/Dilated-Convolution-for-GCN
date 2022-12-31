@@ -1,0 +1,55 @@
+out_dir: results_experiments
+num_workers: 8
+metric_best: 'accuracy'
+metric_agg: 'argmax'
+accelerator: 'cpu'
+dataset:
+  format: TU
+  name: ENZYMES
+  task: graph
+  task_type: classification
+  node_encoder: false
+  node_encoder_bn: false
+  node_encoder_name: Atom
+  edge_encoder: false
+  edge_encoder_bn: false
+  edge_encoder_name: Bond
+  dir: /cluster/scratch/piattigi/datasets
+  preprocesss_dataset: true #active only if dilated_gnn, and not use_edge_features = false
+train:
+  batch_size: 32
+  eval_period: 1
+  ckpt_period: 100
+  sampler: full_batch
+  early_stopping: true
+  early_stopping_patience: 100
+model:
+  type: dilated_gnn #[standard_gnn, dilated_gnn]
+  loss_fun: cross_entropy
+  graph_pooling: mean #[concat_across_sum_of_layers, mean]
+gnn:
+  layers_pre_mp: 0 
+  layers_mp: 5 #when model=dilated_gnn not used, but needs to be > 0
+  layers_k1: 2 #only model=dilated_gnn
+  layers_k2: 2 #only model=dilated_gnn
+  dilated_path_join: add #[concat, add, none] #only model=dilated_gnn
+  learn_alpha_residual_connection: true #[true, false] #only model=dilated_gnn
+  layer_type: gcnconv #[egatconv, eginconv, gatconv, ginconv]
+  use_edge_features: false
+  edge_agg: add #[concat, add] #used only if layer type starts with edge_
+  layers_post_mp: 1
+  dim_inner: 32 #hidden dim
+  batchnorm: true
+  act: relu #activation function
+  act_on_last_layer_mp: false
+  dropout: 0.5
+  agg: none
+  normalize_adj: false
+optim:
+  optimizer: adam
+  base_lr: 0.001
+  max_epoch: 500
+  scheduler: none #step_lr_epochs
+  weight_decay: 0.0 
+  step_size: 50
+  step_gamma: 0.5
