@@ -223,7 +223,6 @@ class Logger(object):
             }
         if self.name == 'val':
             for (k,v) in task_stats.items():
-                print('k=', k)
                 pl_module.log(f'val_{k}', v)
         # print
         logging.info('{}: {}'.format(self.name, stats))
