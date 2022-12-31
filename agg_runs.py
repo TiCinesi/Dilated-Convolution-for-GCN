@@ -97,8 +97,8 @@ def json_to_dict_list(fname, split):
     #epoch_set = set()
     with open(fname) as f:
         lines = f.readlines()
-        if split == 'val': #NOTE skip logs of sanity check dataloader
-            lines = lines[1:]
+        # if split == 'val': #NOTE skip logs of sanity check dataloader
+        #     lines = lines[1:]
 
         for line in lines:
             line = line.rstrip()

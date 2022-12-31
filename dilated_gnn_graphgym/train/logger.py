@@ -309,7 +309,8 @@ class LoggerCallback(Callback):
         trainer: 'pl.Trainer',
         pl_module: 'pl.LightningModule',
     ):
-        self._val_epoch_start_time = time.time()
+        if not trainer.sanity_checking:
+            self._val_epoch_start_time = time.time()
 
     def on_test_epoch_start(
         self,
@@ -339,8 +340,9 @@ class LoggerCallback(Callback):
         batch_idx: int,
         dataloader_idx: int,
     ) -> None:
-        stats = self._get_stats(self._val_epoch_start_time, outputs, trainer)
-        self.val_logger.update_stats(**stats)
+        if not trainer.sanity_checking:
+            stats = self._get_stats(self._val_epoch_start_time, outputs, trainer)
+            self.val_logger.update_stats(**stats)
 
     def on_test_batch_end(
         self,
@@ -365,8 +367,9 @@ class LoggerCallback(Callback):
         self,
         trainer: 'pl.Trainer',
         pl_module: 'pl.LightningModule',
-    ):
-        self.val_logger.write_epoch(trainer.current_epoch, pl_module)
+    ):  
+        if not trainer.sanity_checking:
+            self.val_logger.write_epoch(trainer.current_epoch, pl_module)
 
     def on_test_epoch_end(
         self,
