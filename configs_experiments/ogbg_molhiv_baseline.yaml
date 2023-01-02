@@ -1,7 +1,8 @@
 out_dir: results_experiments
-num_workers: 16
+num_workers: 32
 metric_best: 'auc'
 metric_agg: 'argmax'
+accelerator: 'cpu'
 dataset:
   format: OGB
   name: ogbg-molhiv
@@ -19,7 +20,7 @@ train:
   ckpt_period: 100
   sampler: full_batch
 model:
-  type: standard_gnn #[standard_gnn, dilated_gnn]
+  type: dilated_gnn #[standard_gnn, dilated_gnn]
   loss_fun: cross_entropy
   graph_pooling: mean
 gnn:
@@ -29,7 +30,7 @@ gnn:
   layers_k2: 2 #only model=dilated_gnn
   dilated_path_join: concat #[concat, add, none] #only model=dilated_gnn
   learn_alpha_residual_connection: true #[true, false] #only model=dilated_gnn
-  layer_type: eginconv #[egatconv, eginconv]
+  layer_type: edge_ginconv #[egatconv, eginconv]
   use_edge_features: true 
   layers_post_mp: 1
   dim_inner: 300 #hidden dim
@@ -42,6 +43,6 @@ gnn:
 optim:
   optimizer: adam
   base_lr: 0.001
-  max_epoch: 100
+  max_epoch: 200
   scheduler: none
   weight_decay: 0.0
