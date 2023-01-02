@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "bottleneck_base",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.py",
+            "console": "integratedTerminal",
+            "args": ["--cfg", "${workspaceFolder}/configs_experiments/bottleneck_base.yaml", "--repeat",  "1"],
+            "justMyCode": false
+        },
+        {
             "name": "ogbg_molhiv test",
             "type": "python",
             "request": "launch",
