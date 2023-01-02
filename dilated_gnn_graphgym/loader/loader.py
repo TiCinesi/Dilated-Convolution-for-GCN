@@ -10,6 +10,7 @@ from torch_geometric.datasets import (
     TUDataset,
 )
 from torch_geometric.graphgym.config import cfg
+from dilated_gnn_graphgym.loader.bottleneck import create_bottleneck_dataloader
 
 from dilated_gnn_graphgym.loader.ogb import create_loader_ogb
 from dilated_gnn_graphgym.loader.tudataset import create_loader_tu
@@ -98,6 +99,8 @@ def create_loader():
     # Load from OGB formatted data
     elif format == 'OGB':
         dataset = create_loader_ogb(name, dataset_dir, transform)
+    elif format == 'BOTTLENECK':
+        dataset = create_bottleneck_dataloader(name, dataset_dir, transform, pre_transform)
     else:
         raise ValueError('Unknown data format: {}'.format(format))
 

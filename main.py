@@ -21,6 +21,13 @@ from agg_runs import agg_runs
 from torch_geometric.graphgym.utils.comp_budget import params_count
 from torch_geometric.graphgym.utils.device import auto_select_device
 
+import ray
+import psutil
+
+num_cpus = psutil.cpu_count(logical=False)
+ray.init(num_cpus=num_cpus)
+
+
 if __name__ == '__main__':
     torch.multiprocessing.set_sharing_strategy('file_system')
     # Load cmd line args
