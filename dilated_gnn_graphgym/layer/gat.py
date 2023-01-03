@@ -19,7 +19,11 @@ class EGATConv(nn.Module):
     """
     def __init__(self, layer_config: LayerConfig, num_heads, attention_concat, **kwargs):
         super().__init__()
-        self.model = pyg.nn.GATConv(layer_config.dim_in, layer_config.dim_out, edge_dim=layer_config.edge_dim,
+        dim_out = layer_config.dim_out 
+        if attention_concat:
+            dim_out = dim_out // num_heads
+
+        self.model = pyg.nn.GATConv(layer_config.dim_in, dim_out, edge_dim=layer_config.edge_dim,
                                     bias=layer_config.has_bias, heads=num_heads, concat=attention_concat)
 
     def forward(self, batch):
@@ -33,7 +37,12 @@ class GATConv(nn.Module):
     """
     def __init__(self, layer_config: LayerConfig, num_heads, attention_concat, **kwargs):
         super().__init__()
-        self.model = pyg.nn.GATConv(layer_config.dim_in, layer_config.dim_out,
+
+        dim_out = layer_config.dim_out 
+        if attention_concat:
+            dim_out = dim_out // num_heads
+
+        self.model = pyg.nn.GATConv(layer_config.dim_in, dim_out,
                                     bias=layer_config.has_bias, heads=num_heads, concat=attention_concat)
 
     def forward(self, batch):

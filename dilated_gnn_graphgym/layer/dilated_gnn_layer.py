@@ -22,8 +22,7 @@ def create_dilated_gnn_layer(dim_in, dim_out, has_act=True, final=False):
     
     if  cfg.gnn.layer_type == 'edge_gatconv' or  cfg.gnn.layer_type == 'gatconv_paper':
         num_heads = cfg.gnn.att_heads_final if final else cfg.gnn.att_heads
-        if not final:
-            layer_conf.dim_out = layer_conf.dim_out // num_heads
+        
         return DilatedGeneralLayer(
             cfg.gnn.layer_type,
             layer_config=layer_conf, num_heads=num_heads, attention_concat=not final)
