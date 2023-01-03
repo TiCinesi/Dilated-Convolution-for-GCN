@@ -5,7 +5,7 @@ metric_agg: 'argmax'
 accelerator: 'cuda'
 dataset:
   format: BOTTLENECK
-  name: depth_6
+  name: depth_5 #HYPER
   task: graph
   task_type: classification
   node_encoder: true
@@ -15,38 +15,46 @@ dataset:
   edge_encoder_bn: false
   edge_encoder_name: Bond
   preprocesss_dataset: true
+  positional_encoding_path: false
 train:
-  batch_size: 64 #HYPER
+  batch_size: 1024 #HYPER depending on depth
   eval_period: 1
   ckpt_period: 100
   sampler: full_batch
+  monitor_val: false
+  early_stopping: true
+  early_stopping_patience: 10
 model:
-  type: dilated_gnn #[standard_gnn, dilated_gnn]
+  type: dilapos_gnn #[standard_gnn, dilated_gnn, dilapos_gnn]
   loss_fun: cross_entropy
   graph_pooling: mean
 gnn:
   head: bottleneck_head
+  stage_type: skipsum #not used on our!
   layers_pre_mp: 0 
-  layers_mp: 5 #when model=dilated_gnn not used, but needs to be > 0
-  layers_k1: 3 #only model=dilated_gnn
-  layers_k2: 2 #only model=dilated_gnn
-  dilated_path_join: concat #[concat, add, none] #only model=dilated_gnn
+  layers_mp: 3 #when model=dilated_gnn not used, but needs to be > 0
+  layers_k1: 1 #only model=dilated_gnn #HYPER
+  layers_k2: 3 #only model=dilated_gnn #HYPER
+  dilated_path_join: add #[concat, add, none] #only model=dilated_gnn
   learn_alpha_residual_connection: true #[true, false] #only model=dilated_gnn
   layer_type: ginconv_paper #[egatconv, eginconv]
+  layer_type_dilated: ginconv_paper #edge_ginconv #NOTE if positional_encoding_path==True needs to consider edges!
   use_edge_features: false
   layers_post_mp: 1
-  dim_inner: 32 #hidden dim
-  batchnorm: true
+  dim_inner: 64 #hidden dim #HYPER?
+  batchnorm: false
+  layer_norm: true
   act: relu #activation function
-  act_on_last_layer_mp: false
-  dropout: 0.5
+  act_on_last_layer_mp: true
+  dropout: 0.0
+  l2norm: False
   agg: none
   normalize_adj: false
 optim:
   optimizer: adam
   base_lr: 0.001
-  max_epoch: 10000
-  scheduler: step_lr_epochs
+  max_epoch: 100
+  scheduler: none
   weight_decay: 0.0
-  step_size: 1000
+  step_size: 50
   step_gamma: 0.5

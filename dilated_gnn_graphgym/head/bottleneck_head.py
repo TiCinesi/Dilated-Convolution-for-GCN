@@ -12,9 +12,7 @@ class BottleneckHead(nn.Module):
   
     def __init__(self, dim_in, dim_out):
         super().__init__()
-        self.layer_post_mp = MLP(
-            new_layer_config(dim_in, dim_out+1, cfg.gnn.layers_post_mp,
-                             has_act=False, has_bias=True, cfg=cfg))
+        self.layer_post_mp = nn.Linear(in_features=dim_in, out_features=dim_out + 1, bias=False)
         
 
     def _apply_index(self, batch):

@@ -224,6 +224,10 @@ class Logger(object):
         if self.name == 'val':
             for (k,v) in task_stats.items():
                 pl_module.log(f'val_{k}', v)
+        
+        if self.name == 'train':
+            for (k,v) in task_stats.items():
+                pl_module.log(f'{k}', v)
         # print
         logging.info('{}: {}'.format(self.name, stats))
         # json

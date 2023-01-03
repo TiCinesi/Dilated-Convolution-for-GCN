@@ -31,18 +31,25 @@ class GraphGymDataModule(LightningDataModule):
 
 cfg.train.early_stopping = False
 cfg.train.early_stopping_patience = 100
+cfg.train.monitor_val = True
 def train(model: GraphGymModule, datamodule, logger: bool = True,
           trainer_config: Optional[dict] = None):
     callbacks = []
     if logger:
         callbacks.append(LoggerCallback())
+
+    if cfg.train.monitor_val:
+        metric = f'val_{cfg.metric_best}'
+    else:
+        metric = cfg.metric_best
+
     if cfg.train.enable_ckpt:
-        ckpt_cbk = pl.callbacks.ModelCheckpoint(dirpath=get_ckpt_dir(), monitor=f'val_{cfg.metric_best}', mode='max' if cfg.metric_agg == 'argmax' else 'min',
+        ckpt_cbk = pl.callbacks.ModelCheckpoint(dirpath=get_ckpt_dir(), monitor=metric, mode='max' if cfg.metric_agg == 'argmax' else 'min',
         save_last=True, auto_insert_metric_name=True)
         callbacks.append(ckpt_cbk)
 
     if cfg.train.early_stopping:
-        cbk = EarlyStopping(monitor=f'val_{cfg.metric_best}', mode='max' if cfg.metric_agg == 'argmax' else 'min',
+        cbk = EarlyStopping(monitor=metric, mode='max' if cfg.metric_agg == 'argmax' else 'min',
                             patience=cfg.train.early_stopping_patience)
         callbacks.append(cbk)                        
 

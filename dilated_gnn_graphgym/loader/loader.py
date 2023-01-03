@@ -17,6 +17,8 @@ from dilated_gnn_graphgym.loader.tudataset import create_loader_tu
 
 from dilated_gnn_graphgym.transform.transform_edge_connectivity import EdgeConnectivity
 from dilated_gnn_graphgym.transform.transform_edge_connectivity_features import EdgeConnectivityAndFeatures
+from dilated_gnn_graphgym.transform.transform_edge_connectivity_features_pos import EdgeConnectivityAndFeaturesPositional
+from dilated_gnn_graphgym.transform.transform_edge_connectivity_pos import EdgeConnectivityPositional
 from dilated_gnn_graphgym.transform.transform_node_features import EmptyNodeFeatures 
 
 
@@ -83,6 +85,11 @@ def create_loader():
             transform = EdgeConnectivityAndFeatures(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
         else:
             transform = EdgeConnectivity(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
+    elif cfg.model.type == 'dilapos_gnn':
+        if cfg.gnn.use_edge_features :
+            transform = EdgeConnectivityAndFeaturesPositional(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
+        else:
+            transform = EdgeConnectivityPositional(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
     else:
         transform = EmptyNodeFeatures()
 
@@ -91,6 +98,10 @@ def create_loader():
         pre_transform = transform
         transform = None
         dataset_dir = f'{dataset_dir}/cache/k1={cfg.gnn.layers_k1}_k2={cfg.gnn.layers_k2}/'
+    elif cfg.dataset.preprocesss_dataset and cfg.model.type == 'dilapos_gnn' and not cfg.gnn.use_edge_features:
+        pre_transform = transform
+        transform = None
+        dataset_dir = f'{dataset_dir}/cache_dilapos/k1={cfg.gnn.layers_k1}_k2={cfg.gnn.layers_k2}/'
 
 
     # Load from Pytorch Geometric dataset

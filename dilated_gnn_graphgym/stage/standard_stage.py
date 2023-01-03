@@ -34,6 +34,7 @@ def create_classic_gnn_layer(dim_in, dim_out, has_act=True, final=False):
 cfg.gnn.layers_k1 = 1
 cfg.gnn.layers_k2 = 1
 cfg.gnn.act_on_last_layer_mp = True
+cfg.gnn.layer_norm = False
 class GNNStandardStage(nn.Module):
     """
     Simple Stage that stack GNN layers
@@ -46,6 +47,9 @@ class GNNStandardStage(nn.Module):
     def __init__(self, dim_in, dim_out, num_layers):
         super().__init__()
         self.num_layers = num_layers
+
+        self.layer_norms = nn.ModuleList()
+        self.layers = nn.ModuleList()
         for i in range(num_layers):
             if cfg.gnn.stage_type == 'skipconcat':
                 d_in = dim_in if i == 0 else dim_in + i * dim_out
@@ -57,13 +61,17 @@ class GNNStandardStage(nn.Module):
                 has_act = cfg.gnn.act_on_last_layer_mp
                 final = True
             layer = create_classic_gnn_layer(d_in, dim_out, has_act, final)
-            self.add_module('layer{}'.format(i), layer)
+            self.layers.append(layer)
+
+            if cfg.gnn.layer_norm:
+                self.layer_norms.append(nn.LayerNorm(dim_out))
 
     def forward(self, batch):
         """"""
         if cfg.model.graph_pooling == 'concat_across_sum_of_layers' or cfg.model.graph_pooling == 'max_of_concat_layers':
             h = []
-            for i, layer in enumerate(self.children()):
+            for i in range(self.num_layers):
+                layer = self.layers[i]
                 x = batch.x
                 batch = layer(batch)
                 if cfg.gnn.stage_type == 'skipsum':
@@ -78,7 +86,8 @@ class GNNStandardStage(nn.Module):
             return batch
 
         else:
-            for i, layer in enumerate(self.children()):
+            for i in range(self.num_layers):
+                layer = self.layers[i]
                 x = batch.x
                 batch = layer(batch)
                 if cfg.gnn.stage_type == 'skipsum':
@@ -88,4 +97,6 @@ class GNNStandardStage(nn.Module):
                     batch.x = torch.cat([x, batch.x], dim=1)
             if cfg.gnn.l2norm:
                 batch.x = F.normalize(batch.x, p=2, dim=-1)
+            if cfg.gnn.layer_norm:
+                batch.x = self.layer_norms[i](batch.x)
             return batch

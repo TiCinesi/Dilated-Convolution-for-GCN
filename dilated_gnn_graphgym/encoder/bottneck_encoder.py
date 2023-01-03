@@ -17,14 +17,9 @@ class BottleneckEncoder(torch.nn.Module):
         dim0 = cfg.share.dim0
         for i in range(2):
             emb = torch.nn.Embedding(dim0+1, emb_dim)
-            torch.nn.init.xavier_uniform_(emb.weight.data)
             self.embedding_list.append(emb)
 
     def forward(self, batch):
         """"""
-        encoded_features = 0
-        for i in range(batch.x.shape[1]):
-            encoded_features += self.embedding_list[i](batch.x[:, i])
-
-        batch.x = encoded_features
+        batch.x = self.embedding_list[0](batch.x[:, 0]) +  self.embedding_list[1](batch.x[:, 1])
         return batch
