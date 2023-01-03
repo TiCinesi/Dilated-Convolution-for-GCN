@@ -14,30 +14,35 @@ dataset:
   edge_encoder_bn: false
   edge_encoder_name: Bond
   dir: /cluster/scratch/piattigi/datasets
+  preprocesss_dataset: true
+  positional_encoding_path: false
 train:
   batch_size: 32
   eval_period: 1
   ckpt_period: 100
   sampler: full_batch
+  early_stopping: true
+  early_stopping_patience: 500
 model:
-  type: standard_gnn #[standard_gnn, dilated_gnn]
+  type: dilapos_gnn #[standard_gnn, dilated_gnn]
   loss_fun: cross_entropy
-  graph_pooling: mean #[concat_across_sum_of_layers, mean]
+  graph_pooling: concat_across_sum_of_layers #[concat_across_sum_of_layers, mean]
 gnn:
   layers_pre_mp: 0 
   layers_mp: 5 #when model=dilated_gnn not used, but needs to be > 0
-  layers_k1: 2 #only model=dilated_gnn
-  layers_k2: 2 #only model=dilated_gnn
-  dilated_path_join: concat #[concat, add, none] #only model=dilated_gnn
+  layers_k1: 3 #only model=dilated_gnn
+  layers_k2: 1 #only model=dilated_gnn
+  dilated_path_join: add #[concat, add, none] #only model=dilated_gnn
   learn_alpha_residual_connection: true #[true, false] #only model=dilated_gnn
-  layer_type: ginconv #[egatconv, eginconv, gatconv, ginconv]
+  layer_type: ginconv_paper #[egatconv, eginconv, gatconv, ginconv]
+  layer_type_dilated: ginconv_paper
   use_edge_features: false 
   layers_post_mp: 1
-  dim_inner: 32 #hidden dim
+  dim_inner: 64 #hidden dim
   batchnorm: true
   act: relu #activation function
   act_on_last_layer_mp: false
-  dropout: 0.5
+  dropout: 0.
   agg: none
   normalize_adj: false
 optim:

@@ -1,0 +1,53 @@
+accelerator: cuda
+dataset:
+  dir: /cluster/scratch/piattigi/datasets
+  edge_encoder: true
+  edge_encoder_bn: false
+  edge_encoder_name: Bond
+  format: OGB
+  name: ogbg-molhiv
+  node_encoder: true
+  node_encoder_bn: false
+  node_encoder_name: Atom
+  task: graph
+  task_type: classification
+gnn:
+  act: relu
+  act_on_last_layer_mp: false
+  agg: none
+  batchnorm: true
+  dilated_path_join: add
+  dim_inner: 300
+  dropout: 0.0
+  l2norm: false
+  layer_type: edge_ginconv
+  layers_k1: 3
+  layers_k2: 1
+  layers_mp: 5
+  layers_post_mp: 1
+  layers_pre_mp: 0
+  learn_alpha_residual_connection: true
+  normalize_adj: false
+  use_edge_features: true
+metric_agg: argmax
+metric_best: auc
+model:
+  graph_pooling: mean
+  loss_fun: cross_entropy
+  type: dilated_gnn
+num_workers: 16
+optim:
+  base_lr: 0.001
+  max_epoch: 200
+  optimizer: adam
+  scheduler: none
+  weight_decay: 0.0
+out_dir: results_experiments/ogbg_molhiv_baseline_grid_gin
+train:
+  batch_size: 128
+  ckpt_period: 100
+  early_stopping: true
+  early_stopping_patience: 100
+  eval_period: 1
+  monitor_val: true
+  sampler: full_batch
