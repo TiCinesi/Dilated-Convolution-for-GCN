@@ -1,4 +1,4 @@
-out_dir: tmp_results
+out_dir: reults_experiments
 num_workers: 16
 metric_best: 'accuracy'
 metric_agg: 'argmax'
@@ -22,8 +22,8 @@ train:
   ckpt_period: 100
   sampler: full_batch
   monitor_val: false
-  early_stopping: true
-  early_stopping_patience: 10
+  early_stopping: false
+  #early_stopping_patience: 20
 model:
   type: dilapos_gnn #[standard_gnn, dilated_gnn, dilapos_gnn]
   loss_fun: cross_entropy
