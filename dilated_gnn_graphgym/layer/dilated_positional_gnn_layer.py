@@ -137,7 +137,14 @@ class DilatedPositionalGeneralLayer(GeneralLayer):
             
             return batch
         else:
-            batch.x = self.layer.model(x=batch.x, edge_index=edge_index)
+
+            if cfg.gnn.use_edge_features:
+                ids = batch.__getattr__(f'dilated_step_{step}_path_ids')
+                edge_feature = batch.edge_attr[ids]
+                edge_feature = self.gem(edge_feature)
+                batch.x = self.layer.model(x=batch.x, edge_index=edge_index, edge_attr=edge_feature)
+            else:
+                batch.x = self.layer.model(x=batch.x, edge_index=edge_index)
 
             batch.x = self.post_layer(batch.x)
             if self.has_l2norm:
