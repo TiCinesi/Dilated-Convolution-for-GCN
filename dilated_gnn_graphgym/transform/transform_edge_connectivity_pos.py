@@ -86,8 +86,8 @@ class EdgeConnectivityPositional(BaseTransform):
 
             if self.positional_encoding_path:
                 data.__setattr__(f'dilated_step_{i}_path_len',  d)
-                data.__setattr__(f'dilated_step_{i}_node_disconnected',  
-                    torch.tensor(distance_graphs_disconnected[i], dtype=torch.bool))
+                # data.__setattr__(f'dilated_step_{i}_node_disconnected',  
+                #     torch.tensor(distance_graphs_disconnected[i], dtype=torch.bool))
 
             if self.use_sparse_adj:
                 to_sparse_edges = ToSparseTensorEdges(f'dilated_step_{i}_edge_index', f'dilated_step_{i}_adj_t')

@@ -113,7 +113,7 @@ class DilatedPositionalGeneralLayer(GeneralLayer):
         
         if self.cfg.dataset.positional_encoding_path:
             path_len = batch.__getattr__(f'dilated_step_{step}_path_len')
-            node_disconnected = batch.__getattr__(f'dilated_step_{step}_node_disconnected')
+            # node_disconnected = batch.__getattr__(f'dilated_step_{step}_node_disconnected')
             
             # NOTE insted of doing self.layer(batch), we access self.layer.model, 
             # to be able to choose which set of edges we are using, and which edge attributes.

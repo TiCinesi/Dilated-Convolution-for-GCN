@@ -125,8 +125,8 @@ class EdgeConnectivityAndFeaturesPositional(BaseTransform):
 
             if cfg.dataset.positional_encoding_path:
                 data.__setattr__(f'dilated_step_{i}_path_len',  d)
-                data.__setattr__(f'dilated_step_{i}_node_disconnected',  
-                    torch.tensor(distance_graphs_disconnected[i], dtype=torch.bool))
+                # data.__setattr__(f'dilated_step_{i}_node_disconnected',  
+                #     torch.tensor(distance_graphs_disconnected[i], dtype=torch.bool))
             
             idx = torch.tensor(distance_graphs_attr_ids[i], dtype=torch.long)
 
