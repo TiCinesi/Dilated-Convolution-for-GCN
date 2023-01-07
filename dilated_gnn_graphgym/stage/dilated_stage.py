@@ -46,7 +46,7 @@ class GNNDilatedStage(nn.Module):
         for i in range(self.k1):
             d_in = dim_in if i == 0 else dim_out
             has_act = True
-            if i == num_layers - 1: #last layer
+            if i == self.k1 - 1: #last layer
                 has_act = cfg.gnn.act_on_last_layer_mp
             layer = create_classic_gnn_layer(d_in, dim_out, has_act)
             self.classic_layers.append(layer)
@@ -61,7 +61,7 @@ class GNNDilatedStage(nn.Module):
         for i in range(self.k2):
             has_act = True
             final = False
-            if i == num_layers - 1: #last layer
+            if i == self.k2 - 1: #last layer
                 has_act = cfg.gnn.act_on_last_layer_mp
                 final = True
             layer = create_dilated_gnn_layer(dim_out, dim_out, has_act,final)
