@@ -58,7 +58,7 @@ class Logger(object):
         if cfg.tensorboard_each_run:
             from tensorboardX import SummaryWriter
             self.tb_writer = SummaryWriter(self.out_dir)
-
+        self.cfg = cfg
         self.reset()
 
     def __getitem__(self, key):
@@ -81,10 +81,10 @@ class Logger(object):
     # basic properties
     def basic(self):
         stats = {
-            'loss': round(self._loss / self._size_current, cfg.round),
-            'lr': round(self._lr, cfg.round),
+            'loss': round(self._loss / self._size_current, self.cfg.round),
+            'lr': round(self._lr, self.cfg.round),
             'params': self._params,
-            'time_iter': round(self.time_iter(), cfg.round),
+            'time_iter': round(self.time_iter(), self.cfg.round),
         }
         gpu_memory = get_current_gpu_usage()
         if gpu_memory > 0:
@@ -102,7 +102,7 @@ class Logger(object):
 
     def _get_pred_int(self, pred_score):
         if len(pred_score.shape) == 1 or pred_score.shape[1] == 1:
-            return (pred_score > cfg.model.thresh).long()
+            return (pred_score > self.model.thresh).long()
         else:
             return pred_score.max(dim=1)[1]
 
@@ -123,11 +123,11 @@ class Logger(object):
         except ValueError:
             r_a_score = 0.0
         return {
-            'accuracy': round(accuracy_score(true, pred_int), cfg.round),
-            'precision': round(precision_score(true, pred_int), cfg.round),
-            'recall': round(recall_score(true, pred_int), cfg.round),
-            'f1': round(f1_score(true, pred_int), cfg.round),
-            'auc': round(r_a_score, cfg.round),
+            'accuracy': round(accuracy_score(true, pred_int), self.cfg.round),
+            'precision': round(precision_score(true, pred_int), self.cfg.round),
+            'recall': round(recall_score(true, pred_int), self.cfg.round),
+            'f1': round(f1_score(true, pred_int), self.cfg.round),
+            'auc': round(r_a_score, self.cfg.round),
         }
 
     def classification_multi(self):
@@ -135,7 +135,7 @@ class Logger(object):
 
         true, pred_score = torch.cat(self._true), torch.cat(self._pred)
         pred_int = self._get_pred_int(pred_score)
-        return {'accuracy': round(accuracy_score(true, pred_int), cfg.round)}
+        return {'accuracy': round(accuracy_score(true, pred_int), self.cfg.round)}
 
     def regression(self):
         from sklearn.metrics import mean_absolute_error, mean_squared_error
@@ -143,11 +143,11 @@ class Logger(object):
         true, pred = torch.cat(self._true), torch.cat(self._pred)
         return {
             'mae':
-            float(round(mean_absolute_error(true, pred), cfg.round)),
+            float(round(mean_absolute_error(true, pred), self.cfg.round)),
             'mse':
-            float(round(mean_squared_error(true, pred), cfg.round)),
+            float(round(mean_squared_error(true, pred), self.cfg.round)),
             'rmse':
-            float(round(math.sqrt(mean_squared_error(true, pred)), cfg.round))
+            float(round(math.sqrt(mean_squared_error(true, pred)), self.cfg.round))
         }
 
     def time_iter(self):
@@ -184,7 +184,7 @@ class Logger(object):
 
         # Try to load customized metrics
         task_stats = {}
-        for custom_metric in cfg.custom_metrics:
+        for custom_metric in self.cfg.custom_metrics:
             func = register.metric_dict.get(custom_metric)
             if not func:
                 raise ValueError(
@@ -203,7 +203,7 @@ class Logger(object):
                 raise ValueError('Task has to be regression or classification')
 
         epoch_stats = {'epoch': cur_epoch}
-        eta_stats = {'eta': round(self.eta(cur_epoch), cfg.round)}
+        eta_stats = {'eta': round(self.eta(cur_epoch), self.cfg.round)}
         custom_stats = self.custom()
 
         if self.name == 'train':
@@ -233,12 +233,12 @@ class Logger(object):
         # json
         dict_to_json(stats, '{}/stats.json'.format(self.out_dir))
         # tensorboard
-        if cfg.tensorboard_each_run:
+        if self.cfg.tensorboard_each_run:
             dict_to_tb(stats, self.tb_writer, cur_epoch)
         self.reset()
 
     def close(self):
-        if cfg.tensorboard_each_run:
+        if self.cfg.tensorboard_each_run:
             self.tb_writer.close()
 
 
@@ -269,6 +269,7 @@ class LoggerCallback(Callback):
         self._train_epoch_start_time = None
         self._val_epoch_start_time = None
         self._test_epoch_start_time = None
+        self.cfg = cfg
 
     @property
     def train_logger(self) -> Any:
@@ -296,9 +297,9 @@ class LoggerCallback(Callback):
             true=outputs['true'].detach().cpu(),
             pred=outputs['pred_score'].detach().cpu(),
             loss=float(outputs['loss']),
-            lr=trainer.lr_scheduler_configs[0].scheduler.get_last_lr()[0],
+            lr=trainer.optimizers[0].param_groups[0]['lr'],
             time_used=time.time() - epoch_start_time,
-            params=cfg.params,
+            params=self.cfg.params,
         )
 
     def on_train_epoch_start(

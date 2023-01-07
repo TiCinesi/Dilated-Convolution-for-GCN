@@ -62,7 +62,7 @@ class DilatedGeneralLayer(GeneralLayer):
 
     def __init__(self, name, layer_config: LayerConfig, **kwargs):
         super().__init__(name, layer_config, **kwargs)
-
+        self.cfg = cfg
         self.layer = register.layer_dict[name](layer_config, **kwargs)
         self.gem = GeM()
 
@@ -72,7 +72,7 @@ class DilatedGeneralLayer(GeneralLayer):
         
         # NOTE insted of doing self.layer(batch), we access self.layer.model, 
         # to be able to choose which set of edges we are using, and which edge attributes.
-        if cfg.gnn.use_edge_features:
+        if self.cfg.gnn.use_edge_features:
             ids = batch.__getattr__(f'dilated_step_{step}_path_ids')
             edge_feature = batch.edge_attr[ids]
             edge_feature = self.gem(edge_feature)

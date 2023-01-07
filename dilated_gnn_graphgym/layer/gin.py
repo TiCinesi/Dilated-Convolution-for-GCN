@@ -132,7 +132,10 @@ class LayerGINConv(nn.Module):
         self.model = pyg.nn.GINConv(gin_nn)
 
     def forward(self, batch):
-        batch.x = self.model(batch.x, batch.edge_index)
+        if batch.edge_index is not None:
+            batch.x = self.model(batch.x, batch.edge_index)
+        else:
+            batch.x = self.model(batch.x, batch.adj_t.t())
         return batch
 
 

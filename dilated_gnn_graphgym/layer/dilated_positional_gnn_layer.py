@@ -98,6 +98,7 @@ class DilatedPositionalGeneralLayer(GeneralLayer):
 
         self.layer = register.layer_dict[name](layer_config, **kwargs)
         self.gem = GeM()
+        self.cfg = cfg
         if cfg.gnn.use_edge_features:
             self.pos = PositionalEncoding(cfg.dataset.edge_dim)
         else:
@@ -105,16 +106,18 @@ class DilatedPositionalGeneralLayer(GeneralLayer):
 
 
     def forward(self, batch, step):
-
-        edge_index = batch.__getattr__(f'dilated_step_{step}_edge_index')
+        if batch.edge_index is not None:
+            edge_index = batch.__getattr__(f'dilated_step_{step}_edge_index')
+        else:
+            adj_t = batch.__getattr__(f'dilated_step_{step}_adj_t')
         
-        if cfg.dataset.positional_encoding_path:
+        if self.cfg.dataset.positional_encoding_path:
             path_len = batch.__getattr__(f'dilated_step_{step}_path_len')
             node_disconnected = batch.__getattr__(f'dilated_step_{step}_node_disconnected')
             
             # NOTE insted of doing self.layer(batch), we access self.layer.model, 
             # to be able to choose which set of edges we are using, and which edge attributes.
-            if cfg.gnn.use_edge_features:
+            if self.cfg.gnn.use_edge_features:
                 ids = batch.__getattr__(f'dilated_step_{step}_path_ids')
                 edge_feature = batch.edge_attr[ids]
                 edge_feature = self.gem(edge_feature)
@@ -138,13 +141,16 @@ class DilatedPositionalGeneralLayer(GeneralLayer):
             return batch
         else:
 
-            if cfg.gnn.use_edge_features:
+            if self.cfg.gnn.use_edge_features:
                 ids = batch.__getattr__(f'dilated_step_{step}_path_ids')
                 edge_feature = batch.edge_attr[ids]
                 edge_feature = self.gem(edge_feature)
                 batch.x = self.layer.model(x=batch.x, edge_index=edge_index, edge_attr=edge_feature)
             else:
-                batch.x = self.layer.model(x=batch.x, edge_index=edge_index)
+                if batch.edge_index is not None:
+                    batch.x = self.layer.model(x=batch.x, edge_index=edge_index)
+                else:
+                    batch.x = self.layer.model(x=batch.x, edge_index=adj_t.t())
 
             batch.x = self.post_layer(batch.x)
             if self.has_l2norm:

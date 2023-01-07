@@ -47,7 +47,7 @@ class GNNStandardStage(nn.Module):
     def __init__(self, dim_in, dim_out, num_layers):
         super().__init__()
         self.num_layers = num_layers
-
+        self.cfg = cfg
         self.layer_norms = nn.ModuleList()
         self.layers = nn.ModuleList()
         for i in range(num_layers):
@@ -68,7 +68,7 @@ class GNNStandardStage(nn.Module):
 
     def forward(self, batch):
         """"""
-        if cfg.model.graph_pooling == 'concat_across_sum_of_layers' or cfg.model.graph_pooling == 'max_of_concat_layers':
+        if self.cfg.model.graph_pooling == 'concat_across_sum_of_layers' or self.cfg.model.graph_pooling == 'max_of_concat_layers':
             h = []
             for i in range(self.num_layers):
                 layer = self.layers[i]
@@ -81,7 +81,7 @@ class GNNStandardStage(nn.Module):
                     batch.x = torch.cat([x, batch.x], dim=1)
                 h.append(batch.x)
             batch.x = torch.stack(h)
-            if cfg.gnn.l2norm:
+            if self.cfg.gnn.l2norm:
                 batch.x = F.normalize(batch.x, p=2, dim=-1)
             return batch
 
@@ -90,13 +90,13 @@ class GNNStandardStage(nn.Module):
                 layer = self.layers[i]
                 x = batch.x
                 batch = layer(batch)
-                if cfg.gnn.stage_type == 'skipsum':
+                if self.cfg.gnn.stage_type == 'skipsum':
                     batch.x = x + batch.x
-                elif cfg.gnn.stage_type == 'skipconcat' and \
+                elif self.cfg.gnn.stage_type == 'skipconcat' and \
                         i < self.num_layers - 1:
                     batch.x = torch.cat([x, batch.x], dim=1)
-            if cfg.gnn.l2norm:
+            if self.cfg.gnn.l2norm:
                 batch.x = F.normalize(batch.x, p=2, dim=-1)
-            if cfg.gnn.layer_norm:
+            if self.cfg.gnn.layer_norm:
                 batch.x = self.layer_norms[i](batch.x)
             return batch

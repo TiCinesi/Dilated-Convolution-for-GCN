@@ -42,6 +42,7 @@ class GNNDilatedPositionalStage(nn.Module):
     def __init__(self, dim_in, dim_out, num_layers) -> None:
         super().__init__()
         #Standard GNN
+        self.cfg = cfg
         self.k1 = cfg.gnn.layers_k1
         self.classic_layers = nn.ModuleList()
         for i in range(self.k1):
@@ -72,7 +73,7 @@ class GNNDilatedPositionalStage(nn.Module):
 
     def forward(self, batch):
         #Classic layers
-        save_intermediate = cfg.model.graph_pooling == 'concat_across_sum_of_layers' or cfg.model.graph_pooling == 'max_of_concat_layers'
+        save_intermediate = self.cfg.model.graph_pooling == 'concat_across_sum_of_layers' or self.cfg.model.graph_pooling == 'max_of_concat_layers'
         h = []
 
         for i in range(self.k1):
@@ -82,7 +83,7 @@ class GNNDilatedPositionalStage(nn.Module):
 
         x = batch.x
 
-        if not cfg.gnn.act_on_last_layer_mp: #perform activation if not already done
+        if not self.cfg.gnn.act_on_last_layer_mp: #perform activation if not already done
             batch.x = self.act(batch.x)
 
         if save_intermediate: #case agnostic of above option
@@ -92,7 +93,7 @@ class GNNDilatedPositionalStage(nn.Module):
         for step in range(self.k2):
             layer = self.dilated_layers[step]
             new_batch = layer(batch, step)
-            if cfg.gnn.learn_alpha_residual_connection:
+            if self.cfg.gnn.learn_alpha_residual_connection:
                 alpha = torch.sigmoid(self.alphas[step])
                 new_batch.x = alpha*new_batch.x + (torch.tensor(1.0) - alpha)*batch.x
             else:
@@ -104,9 +105,9 @@ class GNNDilatedPositionalStage(nn.Module):
                 h.append(batch.x)
         
         #Skip connection between 2 paths
-        if cfg.gnn.dilated_path_join == 'concat':
+        if self.cfg.gnn.dilated_path_join == 'concat':
             batch.x = torch.cat([batch.x, x], dim=1)
-        elif cfg.gnn.dilated_path_join == 'add':
+        elif self.cfg.gnn.dilated_path_join == 'add':
             batch.x = batch.x + x
         
         if save_intermediate:

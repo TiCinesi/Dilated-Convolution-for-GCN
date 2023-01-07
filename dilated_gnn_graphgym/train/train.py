@@ -11,6 +11,7 @@ from dilated_gnn_graphgym.train.logger import LoggerCallback
 from torch_geometric.graphgym.model_builder import GraphGymModule
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
+from pytorch_lightning.strategies import DDPSpawnStrategy
 
 
 class GraphGymDataModule(LightningDataModule):
@@ -32,6 +33,8 @@ class GraphGymDataModule(LightningDataModule):
 cfg.train.early_stopping = False
 cfg.train.early_stopping_patience = 100
 cfg.train.monitor_val = True
+cfg.train.accumulate_grad = 1
+cfg.train_strategy = None
 def train(model: GraphGymModule, datamodule, logger: bool = True,
           trainer_config: Optional[dict] = None):
     callbacks = []
@@ -54,6 +57,10 @@ def train(model: GraphGymModule, datamodule, logger: bool = True,
         callbacks.append(cbk)                        
 
     trainer_config = trainer_config or {}
+    strategy = None
+    if cfg.train_strategy == 'ddp_spawn':
+        strategy = DDPSpawnStrategy()
+        
     trainer = pl.Trainer(
         **trainer_config,
         enable_checkpointing=cfg.train.enable_ckpt,
@@ -63,6 +70,8 @@ def train(model: GraphGymModule, datamodule, logger: bool = True,
         accelerator=cfg.accelerator,
         devices=cfg.devices,
         auto_select_gpus=True,
+        accumulate_grad_batches=cfg.train.accumulate_grad,
+        strategy=strategy
     )
 
     trainer.fit(model, datamodule=datamodule)

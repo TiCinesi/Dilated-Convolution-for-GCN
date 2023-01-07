@@ -8,12 +8,17 @@ import math
 import numpy as np
 from torch_geometric.graphgym.config import cfg
 
-cfg.dataset.positional_encoding_path = False
+from dilated_gnn_graphgym.transform.to_sparse_edges import ToSparseTensorEdges
+
+
 class EdgeConnectivityPositional(BaseTransform):
-    def __init__(self, k1, k2) -> None:
+    def __init__(self, k1, k2, use_sparse_adj, positional_encoding_path) -> None:
         super().__init__()
         self.k1 = k1 
         self.k2 = k2
+        self.use_sparse_adj = use_sparse_adj
+        self.positional_encoding_path = positional_encoding_path
+
 
     def __call__(self, data: Data) -> Data:
         if data.x is None:
@@ -66,6 +71,10 @@ class EdgeConnectivityPositional(BaseTransform):
                 
                     distance_graphs_disconnected[i].append(flag)
         
+        if self.use_sparse_adj:
+            to_sparse_edges = ToSparseTensorEdges()
+            data = to_sparse_edges(data)
+
         for i in range(self.k2):
 
             edges = torch.tensor(distance_graphs[i], dtype=torch.int64)
@@ -75,11 +84,14 @@ class EdgeConnectivityPositional(BaseTransform):
                 edges = torch.empty((2,0), dtype=torch.int64)
             data.__setattr__(f'dilated_step_{i}_edge_index',  edges)
 
-            if cfg.dataset.positional_encoding_path:
+            if self.positional_encoding_path:
                 data.__setattr__(f'dilated_step_{i}_path_len',  d)
                 data.__setattr__(f'dilated_step_{i}_node_disconnected',  
                     torch.tensor(distance_graphs_disconnected[i], dtype=torch.bool))
 
+            if self.use_sparse_adj:
+                to_sparse_edges = ToSparseTensorEdges(f'dilated_step_{i}_edge_index', f'dilated_step_{i}_adj_t')
+                data = to_sparse_edges(data)
 
         return data
 

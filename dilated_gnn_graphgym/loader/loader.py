@@ -69,6 +69,9 @@ def ___load_pyg(name, dataset_dir):
 
 cfg.gnn.use_edge_features = False
 cfg.dataset.preprocesss_dataset = False
+
+cfg.dataset.positional_encoding_path = False
+cfg.dataset.use_sparse_adj = False
 def create_loader():
     """
     Create data loader objects in array
@@ -87,9 +90,13 @@ def create_loader():
             transform = EdgeConnectivity(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
     elif cfg.model.type == 'dilapos_gnn':
         if cfg.gnn.use_edge_features :
+            if cfg.dataset.use_sparse_adj:
+                raise ValueError(f'cfg.dataset.use_sparse_adj is set to true, but this is incompatible with cfg.gnn.use_edge_features=True')
             transform = EdgeConnectivityAndFeaturesPositional(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
         else:
-            transform = EdgeConnectivityPositional(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
+            if cfg.dataset.use_sparse_adj and cfg.dataset.positional_encoding_path:
+                raise ValueError(f'cfg.dataset.use_sparse_adj is set to true, but this is incompatible with cfg.dataset.positional_encoding_path=True')
+            transform = EdgeConnectivityPositional(cfg.gnn.layers_k1, cfg.gnn.layers_k2, cfg.dataset.use_sparse_adj, cfg.dataset.positional_encoding_path)
     else:
         transform = EmptyNodeFeatures()
 

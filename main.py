@@ -14,7 +14,7 @@ from torch_geometric.graphgym.config import (
     set_run_dir,
 )
 from torch_geometric.graphgym.logger import set_printing
-from torch_geometric.graphgym.model_builder import create_model
+from dilated_gnn_graphgym.train.model_builder import create_model
 #from torch_geometric.graphgym.train import GraphGymDataModule, train
 from dilated_gnn_graphgym.train.train import GraphGymDataModule, train
 from agg_runs import agg_runs
@@ -47,7 +47,7 @@ if __name__ == '__main__':
         logging.info(cfg)
         cfg.params = params_count(model)
         logging.info('Num parameters: %s', cfg.params)
-        train(model, datamodule, logger=True, trainer_config={'strategy':None})
+        train(model, datamodule, logger=True)
 
     # Aggregate results from different seeds
     agg_runs(cfg.out_dir, cfg.metric_best)

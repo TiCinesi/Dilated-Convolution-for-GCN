@@ -9,7 +9,6 @@ from torch_geometric.loader import (
     NeighborSampler,
     RandomNodeLoader,
 )
-
 from torch_geometric.graphgym.config import cfg
 
 
@@ -41,10 +40,11 @@ def set_dataset_info(dataset):
     except Exception:
         cfg.share.dim_out = 1
 
+cfg.persistent_workers = False
 def get_loader(dataset, sampler, batch_size, shuffle=True):
     if sampler == "full_batch" or len(dataset) > 1:
         loader_train = DataLoader(dataset, batch_size=batch_size,
-                                  shuffle=shuffle, num_workers=cfg.num_workers,
+                                  shuffle=shuffle, num_workers=cfg.num_workers, persistent_workers=cfg.persistent_workers,
                                   pin_memory=True)
     elif sampler == "neighbor":
         loader_train = NeighborSampler(
