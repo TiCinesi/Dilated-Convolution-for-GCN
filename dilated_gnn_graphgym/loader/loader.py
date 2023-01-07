@@ -108,8 +108,10 @@ def create_loader():
     elif cfg.dataset.preprocesss_dataset and cfg.model.type == 'dilapos_gnn' and not cfg.gnn.use_edge_features:
         pre_transform = transform
         transform = None
-        dataset_dir = f'{dataset_dir}/cache_dilapos/k1={cfg.gnn.layers_k1}_k2={cfg.gnn.layers_k2}/'
-
+        if cfg.dataset.positional_encoding_path:
+            dataset_dir = f'{dataset_dir}/cache_dilapos_path_encoded/k1={cfg.gnn.layers_k1}_k2={cfg.gnn.layers_k2}/'
+        else:
+            dataset_dir = f'{dataset_dir}/cache_dilapos/k1={cfg.gnn.layers_k1}_k2={cfg.gnn.layers_k2}/'
 
     # Load from Pytorch Geometric dataset
     if format == 'TU':

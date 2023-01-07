@@ -102,7 +102,7 @@ class Logger(object):
 
     def _get_pred_int(self, pred_score):
         if len(pred_score.shape) == 1 or pred_score.shape[1] == 1:
-            return (pred_score > self.model.thresh).long()
+            return (pred_score > self.cfg.model.thresh).long()
         else:
             return pred_score.max(dim=1)[1]
 

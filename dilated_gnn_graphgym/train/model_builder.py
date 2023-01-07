@@ -90,6 +90,21 @@ def create_model(to_device=True, dim_in=None, dim_out=None) -> GraphGymModule:
     if 'classification' in cfg.dataset.task_type and dim_out == 2:
         dim_out = 1
 
+    if cfg.model.type == 'dilapos_gnn':
+        if cfg.gnn.use_edge_features:
+            cfg.gnn.layer_type_dilated = cfg.gnn.layer_type
+        else:
+            if cfg.dataset.positional_encoding_path:
+                #Change to layer that support edges
+                d = {'ginconv_paper':'edge_ginconv', 
+                      'gcnconv':'edge_gcnconv',
+                      'sageconv':'edge_sageconv',
+                      'gatconv_paper':'edge_gatconv'
+                    }
+                cfg.gnn.layer_type_dilated= d[cfg.gnn.layer_type]
+            else:
+                cfg.gnn.layer_type_dilated = cfg.gnn.layer_type
+
     model = GraphGymModule(dim_in, dim_out, cfg)
     if to_device:
         model.to(torch.device(cfg.accelerator))
