@@ -4,7 +4,7 @@ dataset:
   edge_encoder_bn: false
   edge_encoder_name: Bond
   format: BOTTLENECK
-  name: depth_7
+  name: depth_6
   node_encoder: true
   node_encoder_bn: false
   node_encoder_name: bottleneck_encoder
@@ -12,13 +12,14 @@ dataset:
   preprocesss_dataset: true
   task: graph
   task_type: classification
+  use_sparse_adj: false
 gnn:
   act: relu
   act_on_last_layer_mp: true
   agg: none
   batchnorm: false
   dilated_path_join: add
-  dim_inner: 64
+  dim_inner: 256
   dropout: 0.0
   head: bottleneck_head
   l2norm: false
@@ -26,7 +27,7 @@ gnn:
   layer_type: ginconv_paper
   layer_type_dilated: ginconv_paper
   layers_k1: 1
-  layers_k2: 3
+  layers_k2: 2
   layers_mp: 3
   layers_post_mp: 1
   layers_pre_mp: 0
@@ -45,13 +46,12 @@ optim:
   base_lr: 0.001
   max_epoch: 100
   optimizer: adam
-  scheduler: none
+  scheduler: reduce_lr_on_plateau
   step_gamma: 0.5
-  step_size: 50
+  step_size: 10
   weight_decay: 0.0
-out_dir: reults_experiments/bottleneck_base_grid_depths
+out_dir: results_experiments/bottleneck_base_grid_depths_2
 train:
-  accumulate_grad: 2
   batch_size: 1024
   ckpt_period: 100
   early_stopping: false
