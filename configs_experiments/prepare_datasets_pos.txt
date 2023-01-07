@@ -1,0 +1,17 @@
+# our idea EDGES
+model.type type ['dilapos_gnn']
+dataset.positional_encoding_path pos [True,False]
+dataset.name dataset ['BZR_MD','COX2_MD','Cuneiform']
+gnn.use_edge_features use_edge_features [True]
+gnn.layer_type layer_type ['edge_ginconv']
+optim.max_epoch max_epoch [2]
+
+# our idea ONLYNODES
+model.type type ['dilapos_gnn']
+dataset.positional_encoding_path pos [True,False]
+dataset.name dataset ['ENZYMES','PROTEINS','DD','NCI1']
+gnn.layers_k1 layers_k1 [1,2,3]
+gnn.layers_k2 layers_k2 [1,2,3]
+gnn.use_edge_features use_edge_features [False]
+gnn.layer_type layer_type ['ginconv_paper']
+optim.max_epoch max_epoch [2]
