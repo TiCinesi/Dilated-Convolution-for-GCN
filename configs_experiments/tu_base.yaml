@@ -48,7 +48,7 @@ gnn:
 optim:
   optimizer: adam
   base_lr: 0.001
-  max_epoch: 1000
+  max_epoch: 1
   scheduler: none #step_lr_epochs
   weight_decay: 0.0 
   step_size: 50
