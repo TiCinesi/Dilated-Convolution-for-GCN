@@ -1,6 +1,6 @@
 # our idea EDGES
 model.type type ['dilated_gnn']
-dataset.name dataset ['BZR_MD','COX2_MD','Cuneiform']
+dataset.name dataset ['BZR_MD','COX2_MD']
 gnn.layer_type layer ['edge_sageconv']
 gnn.use_edge_features edges [True]
 gnn.layers_k1 k1 [1,2,3]
@@ -30,7 +30,7 @@ model.graph_pooling gpool ['max_of_concat_layers','mean']
 
 # used for comparison
 model.type type ['standard_gnn']
-dataset.name dataset ['BZR_MD','COX2_MD','Cuneiform']
+dataset.name dataset ['BZR_MD','COX2_MD']
 gnn.layer_type layer ['edge_sageconv']
 gnn.dim_inner h [32,64]
 gnn.layers_mp layers_mp [3,5]

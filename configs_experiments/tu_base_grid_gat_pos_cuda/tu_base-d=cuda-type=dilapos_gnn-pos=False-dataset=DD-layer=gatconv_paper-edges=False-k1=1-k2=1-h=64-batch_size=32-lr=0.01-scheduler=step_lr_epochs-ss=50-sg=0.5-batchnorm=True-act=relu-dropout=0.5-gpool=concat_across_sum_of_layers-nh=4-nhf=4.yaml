@@ -42,7 +42,7 @@ model:
 num_workers: 8
 optim:
   base_lr: 0.01
-  max_epoch: 1
+  max_epoch: 1000
   optimizer: adam
   scheduler: step_lr_epochs
   step_gamma: 0.5
