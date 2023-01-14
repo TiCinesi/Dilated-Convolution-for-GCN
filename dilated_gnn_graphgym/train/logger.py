@@ -296,7 +296,7 @@ class LoggerCallback(Callback):
         return dict(
             true=outputs['true'].detach().cpu(),
             pred=outputs['pred_score'].detach().cpu(),
-            loss=float(outputs['loss']),
+            loss=float(outputs['loss'].detach().cpu()),
             lr=trainer.optimizers[0].param_groups[0]['lr'],
             time_used=time.time() - epoch_start_time,
             params=self.cfg.params,

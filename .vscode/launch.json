@@ -19,7 +19,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/configs/ogbg_molhiv_our.yaml", "--repeat",  "3"],
+            "args": ["--cfg", "${workspaceFolder}/configs_experiments/ogbg_molhiv_baseline.yaml", "--repeat",  "3"],
             "justMyCode": false
         },
         {
@@ -28,7 +28,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/configs/gat.yaml", "--repeat",  "1"],
+            "args": ["--cfg", "${workspaceFolder}/configs_experiments/tu_base_grid_gat_pos_cpu/tu_base-d=cpu-type=dilapos_gnn-pos=True-dataset=ENZYMES-layer=gatconv_paper-edges=False-k1=3-k2=1-h=64-batch_size=32-lr=0.01-scheduler=step_lr_epochs-ss=50-sg=0.5-batchnorm=True-act=relu-dropout=0.5-gpool=concat_across_sum_of_layers-nh=4-nhf=6.yaml", "--repeat",  "1"],
             "justMyCode": false
         },
         {
@@ -37,7 +37,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
-            "args": ["--cfg", "${workspaceFolder}/configs/tu_proteins_our.yaml", "--repeat",  "1"],
+            "args": ["--cfg", "${workspaceFolder}/configs_experiments/tu_base.yaml", "--repeat",  "1"],
             "justMyCode": false
         },
         {
@@ -83,7 +83,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/agg_batch.py",
             "console": "integratedTerminal",
-            "args": ["--dir", "${workspaceFolder}/results_experiments/base_grid_gcn/"],
+            "args": ["--dir", "/home/gio/Documents/ETH_code//DL-project_results/new_results/tu_base_grid_sage_pos_cpu"],
             "justMyCode": false
         },
         {

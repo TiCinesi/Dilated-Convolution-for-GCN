@@ -1,0 +1,11 @@
+{"epoch": 0, "loss": 3.512, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.9032, "time_iter_std": 0.0, "accuracy": 0.0259, "accuracy_std": 0.0}
+{"epoch": 1, "loss": 6.4876, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8632, "time_iter_std": 0.0, "accuracy": 0.0345, "accuracy_std": 0.0}
+{"epoch": 2, "loss": 19.7462, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8596, "time_iter_std": 0.0, "accuracy": 0.04, "accuracy_std": 0.0}
+{"epoch": 3, "loss": 30.6852, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8851, "time_iter_std": 0.0, "accuracy": 0.043, "accuracy_std": 0.0}
+{"epoch": 4, "loss": 34.6728, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8584, "time_iter_std": 0.0, "accuracy": 0.0441, "accuracy_std": 0.0}
+{"epoch": 5, "loss": 35.5143, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8778, "time_iter_std": 0.0, "accuracy": 0.0436, "accuracy_std": 0.0}
+{"epoch": 6, "loss": 36.8199, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8687, "time_iter_std": 0.0, "accuracy": 0.0442, "accuracy_std": 0.0}
+{"epoch": 7, "loss": 38.0424, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8988, "time_iter_std": 0.0, "accuracy": 0.0502, "accuracy_std": 0.0}
+{"epoch": 8, "loss": 41.5874, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8904, "time_iter_std": 0.0, "accuracy": 0.0506, "accuracy_std": 0.0}
+{"epoch": 9, "loss": 23.4068, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 0.8623, "time_iter_std": 0.0, "accuracy": 0.0498, "accuracy_std": 0.0}
+{"epoch": 10, "loss": 29.9114, "loss_std": 0.0, "lr": 0.001, "lr_std": 0.0, "params": 1626628.0, "params_std": 0.0, "time_iter": 1.0924, "time_iter_std": 0.0, "accuracy": 0.0481, "accuracy_std": 0.0}

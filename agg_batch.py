@@ -188,6 +188,7 @@ def agg_batch(dir, metric_best='auto'):
                     fname_stats = os.path.join(dir_split, 'best.json')
                     dict_stats = json_to_dict_list(fname_stats)[
                         -1]  # get best val epoch
+                    dict_stats['model_id'] = run
                     rm_keys(dict_stats,
                             ['lr', 'lr_std', 'eta', 'eta_std', 'params_std'])
                     results[split].append({**dict_name, **dict_stats})
@@ -212,6 +213,7 @@ def agg_batch(dir, metric_best='auto'):
                     fname_stats = os.path.join(dir_split, 'stats.json')
                     dict_stats = json_to_dict_list(fname_stats)[
                         -1]  # get last epoch
+                    dict_stats['model_id'] = run
                     rm_keys(dict_stats,
                             ['lr', 'lr_std', 'eta', 'eta_std', 'params_std'])
                     results[split].append({**dict_name, **dict_stats})
@@ -235,6 +237,8 @@ def agg_batch(dir, metric_best='auto'):
                     fname_stats = os.path.join(dir_split, 'stats.json')
                     dict_stats = json_to_dict_list(
                         fname_stats)  # get best epoch
+                    for d in dict_stats:
+                        d['model_id'] = run 
                     if metric_best == 'auto':
                         metric = 'auc' if 'auc' in dict_stats[0] \
                             else 'accuracy'

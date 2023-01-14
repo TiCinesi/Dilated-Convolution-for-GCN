@@ -35,6 +35,7 @@ cfg.train.early_stopping_patience = 100
 cfg.train.monitor_val = True
 cfg.train.accumulate_grad = 1
 cfg.train_strategy = None
+cfg.train.compute_test = True
 def train(model: GraphGymModule, datamodule, logger: bool = True,
           trainer_config: Optional[dict] = None):
     callbacks = []
@@ -75,5 +76,6 @@ def train(model: GraphGymModule, datamodule, logger: bool = True,
     )
 
     trainer.fit(model, datamodule=datamodule)
-    trainer.test(model, datamodule=datamodule, ckpt_path='last')
-    trainer.test(model, datamodule=datamodule, ckpt_path='best')
+    if cfg.train.compute_test:
+        trainer.test(model, datamodule=datamodule, ckpt_path='last')
+        trainer.test(model, datamodule=datamodule, ckpt_path='best')

@@ -29,3 +29,42 @@ Depth 8:
 seed: 8
 
 
+
+
+Overveiw experiments:
+GAT (DONE expect DD)
+gat cpu DONE --> PC
+gat cuda DONE --> PC
+gat pos cuda DONE --> PC (RE_BATCH & RE_DOWNLOAD if DD)
+gat pos cuda DD NEED TO RUN ON PRO (same folder as gat_pos_cuda)
+
+GCN
+gcn cpu DONE --> PC
+gcn cuda -> CPU -> PC -> DONE
+gcn cuda DD --> GPU24 --> RUNNING 1
+
+gcn pos cpu DONE --> PC
+gcn pos cuda DONE --> PC
+
+
+GIN (DONE)
+gin cpu DONE --> PC
+gin cuda -> CPU -> DONE --> PC
+gin cuda DD --> HE --> DONE (dowload via above) 
+
+gin pos cpu DONE --> PC
+gin pos cuda DONE --> PC
+
+
+SAGE
+sage cpu DONE --> PC
+sage cuda RUNNING 291
+sage cuda DD  RUNNING 176
+
+sage pos cpu DONE --> PC
+sage pos cuda RUNNING remaining 10 on HE (RE_BATCH & RE_DOWNLOAD)
+
+
+
+NOTE:
+- sacct --starttime 2023-01-11 --format JobID,JobName,Elapsed,State,SubmitLine%500  | grep FAILED s

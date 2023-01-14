@@ -53,4 +53,4 @@ if __name__ == '__main__':
     agg_runs(cfg.out_dir, cfg.metric_best)
     # When being launched in batch mode, mark a yaml as done
     if args.mark_done:
-        os.rename(args.cfg_file, f'{args.cfg_file}_done')
+        os.rename(args.cfg_file, f'{args.cfg_file[:-5]}.done')

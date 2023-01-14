@@ -1,0 +1,1 @@
+{"epoch": "val_best", "ckpt_epoch": 25.0, "ckpt_epoch_std": 0.0, "eta": 2133170.2326, "eta_std": 0.0, "loss": 0.1935, "loss_std": 0.0, "lr": 0.0005, "lr_std": 0.0, "params": 407812.0, "params_std": 0.0, "time_iter": 23.7521, "time_iter_std": 0.0, "accuracy": 0.8877, "accuracy_std": 0.0}
