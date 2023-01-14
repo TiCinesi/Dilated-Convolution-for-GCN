@@ -1,8 +1,8 @@
-out_dir: results_experiments
+out_dir: tmp
 num_workers: 16
 metric_best: 'auc'
 metric_agg: 'argmax'
-accelerator: 'cuda'
+accelerator: 'cpu'
 dataset:
   format: OGB
   name: ogbg-molhiv

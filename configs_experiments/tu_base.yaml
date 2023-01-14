@@ -1,11 +1,11 @@
-out_dir: results_experiments
+out_dir: tmp
 num_workers: 8
 metric_best: 'accuracy'
 metric_agg: 'argmax'
 accelerator: 'cpu'
 dataset:
   format: TU
-  name: ENZYMES
+  name: NCI1
   task: graph
   task_type: classification
   node_encoder: false
@@ -15,7 +15,7 @@ dataset:
   edge_encoder_bn: false
   edge_encoder_name: Bond
   dir: /cluster/scratch/piattigi/datasets
-  preprocesss_dataset: true #active only if dilated_gnn, and not use_edge_features = false
+  preprocesss_dataset: false #active only if dilated_gnn, and not use_edge_features = false
 train:
   batch_size: 32
   eval_period: 1

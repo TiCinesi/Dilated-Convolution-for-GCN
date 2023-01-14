@@ -41,7 +41,7 @@ gat pos cuda DD NEED TO RUN ON PRO (same folder as gat_pos_cuda)
 GCN
 gcn cpu DONE --> PC
 gcn cuda -> CPU -> PC -> DONE
-gcn cuda DD --> GPU24 --> RUNNING 1
+gcn cuda DD --> GPU24 -> PC -> DONE
 
 gcn pos cpu DONE --> PC
 gcn pos cuda DONE --> PC
@@ -50,7 +50,7 @@ gcn pos cuda DONE --> PC
 GIN (DONE)
 gin cpu DONE --> PC
 gin cuda -> CPU -> DONE --> PC
-gin cuda DD --> HE --> DONE (dowload via above) 
+gin cuda DD --> HE --> DONE --> PC
 
 gin pos cpu DONE --> PC
 gin pos cuda DONE --> PC
