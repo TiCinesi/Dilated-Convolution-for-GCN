@@ -1,8 +1,8 @@
-out_dir: tmp
+out_dir: results_experiments
 num_workers: 8
 metric_best: 'accuracy'
 metric_agg: 'argmax'
-accelerator: 'cpu'
+accelerator: 'cuda'
 dataset:
   format: TU
   name: NCI1
