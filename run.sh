@@ -1,1 +1,0 @@
-python3 main.py --cfg configs/dilated_model_test.yaml
