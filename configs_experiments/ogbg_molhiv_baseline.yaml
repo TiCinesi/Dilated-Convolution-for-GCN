@@ -14,7 +14,7 @@ dataset:
   edge_encoder: true
   edge_encoder_bn: false
   edge_encoder_name: Bond
-  dir: /cluster/scratch/piattigi/datasets
+  dir: $SCRATCH/datasets_DL
 train:
   batch_size: 32
   eval_period: 1
