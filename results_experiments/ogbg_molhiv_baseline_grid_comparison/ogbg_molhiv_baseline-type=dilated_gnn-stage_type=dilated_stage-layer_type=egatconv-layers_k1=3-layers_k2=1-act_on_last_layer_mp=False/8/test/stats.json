@@ -1,2 +1,0 @@
-{"epoch": 99, "loss": 0.1825, "lr": 0.001, "params": 782403, "time_iter": 1.83, "accuracy": 0.9681, "precision": 0.0, "recall": 0.0, "f1": 0.0, "auc": 0.6799}
-{"epoch": 42, "loss": 0.2092, "lr": 0.001, "params": 782403, "time_iter": 1.9524, "accuracy": 0.9677, "precision": 0.0, "recall": 0.0, "f1": 0.0, "auc": 0.7021}
