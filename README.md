@@ -27,7 +27,7 @@ paper.pdf                   -- paper describing our approaches
 
 #### Additional data
 We already provided the aggregated score & hyperparameters of all our run in the results_experiment folder.
-Extensive experiment logs (not aggregated) are available here : TODO-link
+Extensive experiment logs (not aggregated) are available here : https://kdrive.infomaniak.com/app/share/105096/8ab6f685-3c87-4ab2-b333-d096174362dd
 
 
 ### Dependencies
