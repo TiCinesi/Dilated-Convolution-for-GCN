@@ -14,7 +14,7 @@ dataset:
   edge_encoder: false
   edge_encoder_bn: false
   edge_encoder_name: Bond
-  dir: $SCRATCH/datasets_DL
+  dir: datasets
   preprocesss_dataset: true #active only if dilated_gnn, and not use_edge_features = false
 train:
   batch_size: 32
@@ -24,7 +24,7 @@ train:
   early_stopping: true
   early_stopping_patience: 500
 model:
-  type: dilated_gnn #[standard_gnn, dilated_gnn]
+  type: dilapos_gnn #[standard_gnn, dilated_gnn]
   loss_fun: cross_entropy
   graph_pooling: mean #[concat_across_sum_of_layers, mean]
 gnn:
