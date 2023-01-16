@@ -27,7 +27,7 @@ paper.pdf                   -- paper describing our approaches
 
 #### Additional data
 We already provided the aggregated score & hyperparameters of all our run in the results_experiment folder.
-Extensive experiment logs (not aggregated) are available here : TODO-lin
+Extensive experiment logs (not aggregated) are available here : TODO-link
 
 
 ### Dependencies
@@ -56,7 +56,6 @@ bash ./setup.sh
 ## Datasets
 Datasets are either dowloaded by the code at runtime or generate at runtime (if syntetic). We use the TUDataset via the `torch_geometric` library and  `ogbg-molhiv` via the library `ogb`.
 The dataset Tree-Neighboursmatch is generate on the fly using an adapted implementation from Alon et al. [2].
-TODO dataset summars
 
 ## How to reproduce our experiment
 Our experiments run on a mixture of requirements, depending on the complexity of the model and the size of the dataset. To reproduce our experiments, we provide scripts that queue them on a SLURM cluster, since all experiments were performed on the ETH Euler cluster.
