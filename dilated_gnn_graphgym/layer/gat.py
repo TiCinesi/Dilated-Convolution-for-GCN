@@ -48,25 +48,3 @@ class GATConv(nn.Module):
     def forward(self, batch):
         batch.x = self.model(batch.x, batch.edge_index)
         return batch
-
-
-@register_layer('gatv2conv')
-class GATv2Conv(nn.Module):
-    def __init__(self, layer_config: LayerConfig, **kwargs):
-        super().__init__()
-        self.model = pyg.nn.GATv2Conv(layer_config.dim_in, layer_config.dim_out, bias=layer_config.has_bias)
-
-    def forward(self, batch):
-        batch.x = self.model(batch.x, batch.edge_index)
-        return batch
-
-@register_layer('edge_gatv2conv')
-class EdgeGATv2Conv(nn.Module):
-    def __init__(self, layer_config: LayerConfig, **kwargs):
-        super().__init__()
-        self.model = pyg.nn.GATv2Conv(layer_config.dim_in, layer_config.dim_out, edge_dim=layer_config.edge_dim,
-                                    bias=layer_config.has_bias)
-
-    def forward(self, batch):
-        batch.x = self.model(batch.x, batch.edge_index, edge_attr=batch.edge_attr)
-        return batch

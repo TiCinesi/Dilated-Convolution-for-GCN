@@ -17,7 +17,7 @@ from torch_geometric.graphgym.logger import set_printing
 from dilated_gnn_graphgym.train.model_builder import create_model
 #from torch_geometric.graphgym.train import GraphGymDataModule, train
 from dilated_gnn_graphgym.train.train import GraphGymDataModule, train
-from dilated_gnn_graphgym import agg_runs
+from dilated_gnn_graphgym.agg_runs import agg_runs
 from torch_geometric.graphgym.utils.comp_budget import params_count
 from torch_geometric.graphgym.utils.device import auto_select_device
 

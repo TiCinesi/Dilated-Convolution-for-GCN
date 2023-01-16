@@ -5,5 +5,4 @@ pip3 install pytorch_lightning yacs
 pip3 install ogb
 pip3 install networkx
 pip3 install torch-sparse
-
-pip3 install graphgym
+pip3 install numpy pandas plotly
