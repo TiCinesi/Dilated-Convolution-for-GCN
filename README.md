@@ -16,11 +16,11 @@ Department of Computer Science, ETH Zurich, Switzerland
 /img                        -- Graphs for the paper
 /notebooks                  -- Results analysis
 /results_experiments        -- Aggregated results (for all logs regarding our experiment see below)
-agg_batch_folder.sh
-agg_run.py
-main.py
-prepare_experiments.sh
-setup.sh
+agg_batch_folder.sh         -- Aggregate grid search experiment
+agg_run.py                  -- Aggregate run
+main.py                     -- Main entrypoint
+prepare_experiments.sh      -- Prepare grid search experiment
+setup.sh                    -- Setup all dependencies
 paper.pdf                   -- paper describing our approaches
 ```
 
