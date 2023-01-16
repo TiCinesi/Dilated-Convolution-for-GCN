@@ -14,8 +14,8 @@ dataset:
   edge_encoder: false
   edge_encoder_bn: false
   edge_encoder_name: Bond
-  dir: $SCRATCH/datasets_DL
-  preprocesss_dataset: false #active only if dilated_gnn, and not use_edge_features = false
+  dir:  datasets
+  preprocesss_dataset: true #active only if dilated_gnn, and not use_edge_features = false
 train:
   batch_size: 32
   eval_period: 1

@@ -1,6 +1,6 @@
 accelerator: cpu
 dataset:
-  dir: $SCRATCH/datasets_DL
+  dir: datasets
   edge_encoder: false
   edge_encoder_bn: false
   edge_encoder_name: Bond
