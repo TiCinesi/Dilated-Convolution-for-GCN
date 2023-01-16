@@ -15,10 +15,10 @@ from dilated_gnn_graphgym.loader.bottleneck import create_bottleneck_dataloader
 from dilated_gnn_graphgym.loader.ogb import create_loader_ogb
 from dilated_gnn_graphgym.loader.tudataset import create_loader_tu
 
-from dilated_gnn_graphgym.transform.transform_edge_connectivity import EdgeConnectivity
-from dilated_gnn_graphgym.transform.transform_edge_connectivity_features import EdgeConnectivityAndFeatures
-from dilated_gnn_graphgym.transform.transform_edge_connectivity_features_pos import EdgeConnectivityAndFeaturesPositional
-from dilated_gnn_graphgym.transform.transform_edge_connectivity_pos import EdgeConnectivityPositional
+from dilated_gnn_graphgym.transform.transform_edge_connectivity import DilatedMPGraphTransform
+from dilated_gnn_graphgym.transform.transform_edge_connectivity_features import DilatedMPGraphEdgeFeaturesTransform
+from dilated_gnn_graphgym.transform.transform_edge_connectivity_features_pos import DilatedLeafsMPGraphEdgeFeaturesTransform
+from dilated_gnn_graphgym.transform.transform_edge_connectivity_pos import DilatedLeafsMPGraphTransform
 from dilated_gnn_graphgym.transform.transform_node_features import EmptyNodeFeatures 
 
 
@@ -85,18 +85,18 @@ def create_loader():
     # Transformer based on dataset and model
     if cfg.model.type == 'dilated_gnn':
         if cfg.gnn.use_edge_features :
-            transform = EdgeConnectivityAndFeatures(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
+            transform = DilatedMPGraphEdgeFeaturesTransform(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
         else:
-            transform = EdgeConnectivity(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
+            transform = DilatedMPGraphTransform(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
     elif cfg.model.type == 'dilapos_gnn':
         if cfg.gnn.use_edge_features :
             if cfg.dataset.use_sparse_adj:
                 raise ValueError(f'cfg.dataset.use_sparse_adj is set to true, but this is incompatible with cfg.gnn.use_edge_features=True')
-            transform = EdgeConnectivityAndFeaturesPositional(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
+            transform = DilatedLeafsMPGraphEdgeFeaturesTransform(cfg.gnn.layers_k1, cfg.gnn.layers_k2)
         else:
             if cfg.dataset.use_sparse_adj and cfg.dataset.positional_encoding_path:
                 raise ValueError(f'cfg.dataset.use_sparse_adj is set to true, but this is incompatible with cfg.dataset.positional_encoding_path=True')
-            transform = EdgeConnectivityPositional(cfg.gnn.layers_k1, cfg.gnn.layers_k2, cfg.dataset.use_sparse_adj, cfg.dataset.positional_encoding_path)
+            transform = DilatedLeafsMPGraphTransform(cfg.gnn.layers_k1, cfg.gnn.layers_k2, cfg.dataset.use_sparse_adj, cfg.dataset.positional_encoding_path)
     else:
         transform = EmptyNodeFeatures()
 

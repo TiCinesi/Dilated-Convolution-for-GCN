@@ -30,7 +30,7 @@ class DilatedInfoData(Data):
             return super().__cat_dim__(key, value, *args, **kwargs)
 
 cfg.dataset.positional_encoding_path  = False
-class EdgeConnectivityAndFeaturesPositional(BaseTransform):
+class DilatedLeafsMPGraphEdgeFeaturesTransform(BaseTransform):
     def __init__(self, k1, k2) -> None:
         super().__init__()
         self.k1 = k1 

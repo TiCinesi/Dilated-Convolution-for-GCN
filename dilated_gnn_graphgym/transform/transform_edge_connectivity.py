@@ -6,7 +6,7 @@ from torch_geometric.utils import to_networkx, from_networkx
 import networkx as nx
 import math
 
-class EdgeConnectivity(BaseTransform):
+class DilatedMPGraphTransform(BaseTransform):
     def __init__(self, k1, k2) -> None:
         super().__init__()
         self.k1 = k1 

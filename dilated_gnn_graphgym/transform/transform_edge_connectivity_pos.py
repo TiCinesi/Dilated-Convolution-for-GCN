@@ -11,7 +11,7 @@ from torch_geometric.graphgym.config import cfg
 from dilated_gnn_graphgym.transform.to_sparse_edges import ToSparseTensorEdges
 
 
-class EdgeConnectivityPositional(BaseTransform):
+class DilatedLeafsMPGraphTransform(BaseTransform):
     def __init__(self, k1, k2, use_sparse_adj, positional_encoding_path) -> None:
         super().__init__()
         self.k1 = k1 

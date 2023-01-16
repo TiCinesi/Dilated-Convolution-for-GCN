@@ -27,7 +27,7 @@ class DilatedInfoData(Data):
         else:
             return super().__cat_dim__(key, value, *args, **kwargs)
 
-class EdgeConnectivityAndFeatures(BaseTransform):
+class DilatedMPGraphEdgeFeaturesTransform(BaseTransform):
     def __init__(self, k1, k2) -> None:
         super().__init__()
         self.k1 = k1 
