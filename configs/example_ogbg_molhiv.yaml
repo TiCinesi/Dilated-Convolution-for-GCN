@@ -1,0 +1,53 @@
+out_dir: results
+num_workers: 16
+metric_best: 'auc'
+metric_agg: 'argmax'
+accelerator: 'cpu'
+dataset:
+  format: OGB
+  name: ogbg-molhiv
+  task: graph
+  task_type: classification
+  node_encoder: true
+  node_encoder_bn: false
+  node_encoder_name: Atom
+  edge_encoder: true
+  edge_encoder_bn: false
+  edge_encoder_name: Bond
+  dir:  datasets
+train:
+  batch_size: 32
+  eval_period: 1
+  ckpt_period: 100
+  sampler: full_batch
+  monitor_val: true
+  early_stopping: true
+  early_stopping_patience: 100
+model:
+  type: dilapos_gnn #[standard_gnn, dilated_gnn, dilapos_gnn]
+  loss_fun: cross_entropy
+  graph_pooling: mean
+gnn:
+  layers_pre_mp: 0 
+  layers_mp: 5 #when model=dilated_gnn not used, but needs to be > 0
+  layers_k1: 2 #only model=dilated_gnn
+  layers_k2: 2 #only model=dilated_gnn
+  dilated_path_join: add #[concat, add, none] #only model=dilated_gnn
+  learn_alpha_residual_connection: true #[true, false] #only model=dilated_gnn
+  layer_type: edge_ginconv #[egatconv, eginconv]
+  use_edge_features: true 
+  layers_post_mp: 1
+  dim_inner: 300 #hidden dim
+  batchnorm: true
+  act: relu #activation function
+  act_on_last_layer_mp: false
+  dropout: 0.5
+  l2norm: False
+  agg: none
+  normalize_adj: false
+optim:
+  optimizer: adam
+  base_lr: 0.001
+  max_epoch: 200
+  scheduler: none
+  weight_decay: 0.0
