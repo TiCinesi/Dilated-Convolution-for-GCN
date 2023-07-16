@@ -31,7 +31,7 @@ Extensive experiment logs (not aggregated) are available here : https://kdrive.i
 
 
 ### Dependencies
-This conde depends on the following libraries
+This code depends on the following libraries
 ```
 pytorch                   1.13.1         
 pytorch-cluster           1.6.0           
